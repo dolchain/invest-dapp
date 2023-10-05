@@ -54,7 +54,8 @@ export default async function Account() {
                 <td className="border px-4 py-2 text-sky-500 hover:cursor-pointer">
                   <a target="#" href={`https://sepolia.etherscan.io/tx/${transaction.txHash}`}>
                     <FontAwesomeIcon icon={faLink} style={{ color: "#0ea5f3", }} />
-                    {reduceHash(transaction.txHash || "")}</a>
+                    {reduceHash(transaction.txHash || "")}
+                  </a>
                 </td>
                 <td className="border px-4 py-2"><CopyableAddress address={transaction.from || ""} /></td>
                 <td className="border px-4 py-2"><CopyableAddress address={transaction.to || ""} /></td>

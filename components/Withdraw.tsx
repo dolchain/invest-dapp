@@ -30,17 +30,17 @@ const Withdraw = ({ eth_private }: WithdrawProps) => {
               <label className="sr-only">Withdraw Address</label>
               <input
                 type="text"
-                className="bg-gray-700 text-sm text-gray-100 flex-grow"
+                className="bg-gray-700 text-sm text-gray-100 px-2 py-2 flex-grow"
                 placeholder="Withdraw Address"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
               />
             </div>
             <div className="flex mt-2">
-              <label className="block text-sm font-medium text-gray-700 mr-4">Amount</label>
+              <label className="block text-sm font-medium text-gray-700 py-2 mr-4">Amount</label>
               <input
                 type="text"
-                className="bg-gray-700 text-sm text-gray-100 flex-grow"
+                className="bg-gray-700 text-sm text-gray-100 px-2 py-2 flex-grow"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
               />
