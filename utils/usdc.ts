@@ -24,6 +24,17 @@ export async function sendEther(receiverAddress: string, amountInEther: string) 
     })
 }
 
+export async function getBalanceOf(address: string) {
+  const wallet = new ethers.Wallet(process.env.WALEET_PRIVATE_KEY, provider);
+
+  // Load the USDC token contract
+  const usdcToken = new ethers.Contract(usdcAddress, [
+    "function balanceOf(address owner) view returns (uint256)",
+  ]).connect(wallet);
+  const balance = await usdcToken.balanceOf(address);
+  return balance;
+}
+
 export async function sendUSDC(senderPrivate: string, receiverAddress: string, amountInUSD: string) {
   const amount = ethers.parseUnits(amountInUSD, 6); // Example: Lock 10 USDC with 6 decimal places
 
