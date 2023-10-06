@@ -3,7 +3,6 @@
 import { sendUSDC } from "@/utils/usdc";
 import { useState } from "react";
 
-
 interface WithdrawProps {
   eth_private: string;
 }

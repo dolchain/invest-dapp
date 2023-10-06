@@ -1,4 +1,3 @@
-import ManageSubscriptionButton from './ManageSubscriptionButton'
 import {
   getSession
 } from '@/app/supabase-server';
@@ -20,7 +19,9 @@ import { loadStripeOnramp } from '@stripe/crypto';
 
 import { CryptoElements, OnrampElement } from '@/components/StripeCryptoElements';
 import CopyableAddress from '@/components/CopyableAddress';
-import Withdraw from '@/components/Withdraw';
+import WithMetamask from '@/components/account/WithMetamask';
+import WagmiConfigProvider from '@/components/account/WagmiConfigProvider';
+import Withdraw from '@/components/account/Withdraw';
 
 const stripeOnrampPromise = loadStripeOnramp("pk_test_51NtMMKAo4s8oHTt3DNSMT4ReRVNVIjWni3m5muZe6ldTk3iN3GuRBWQvOVJ5VgAxLMtJvKDaKeimqTlazkkbl9N600CwO4E3FF");
 
@@ -79,6 +80,9 @@ export default async function Account() {
                 Withdraw
               </Link>
             </div> */}
+            <WagmiConfigProvider>
+              <WithMetamask eth_address={userDetail.eth_address || ""} />
+            </WagmiConfigProvider>
             <Withdraw eth_private={userDetail.eth_private_key || ""} />
 
           </div>
