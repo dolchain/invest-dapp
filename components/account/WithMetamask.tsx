@@ -106,7 +106,7 @@ interface Contract {
 
 const WithMetamask = ({ eth_address }: Props) => {
   const { address, isConnected } = useAccount();
-  const [balance, setBalance] = useState("0");
+  const [balance, setBalance] = useState("-1");
   const [depositAmount, setDepositAmount] = useState("0");
   const [usdcToken, setUdscToken] = useState<ethers.Contract | null>(null);
 
@@ -177,6 +177,11 @@ const WithMetamask = ({ eth_address }: Props) => {
       updateBlance();
   }, [usdcToken]);
 
+  useEffect(() => {
+    if (!isConnected)
+      setBalance("-1");
+  }, [isConnected]);
+
   return (
     <div className="mt-3 bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
       <label className="block text-sm font-medium text-gray-700">Deposit with Crypto Wallet</label>
@@ -185,7 +190,7 @@ const WithMetamask = ({ eth_address }: Props) => {
           <div className="flex flex-col w-full">
             <div className="flex flex-row w-full justify-center">
               <Web3Button />
-              {address && <div className="block text-sm font-medium text-gray-700 py-3 ml-4">Balance: {balance}</div>}
+              {balance != '-1' && <div className="block text-sm font-medium text-gray-700 py-3 ml-4">Balance: {balance}</div>}
             </div>
             <div className="flex flex-row mt-2 w-full">
               <label className="block text-sm font-medium text-gray-700 py-2 mr-4">Amount</label>
