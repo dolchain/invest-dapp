@@ -184,7 +184,7 @@ const WithMetamask = ({ eth_address }: Props) => {
         <div className="flex items-center border rounded-md">
           <div className="flex flex-col w-full">
             <div className="flex flex-row w-full justify-center">
-              {/* <Web3Button /> */}
+              <Web3Button />
               {address && <div className="block text-sm font-medium text-gray-700 py-3 ml-4">Balance: {balance}</div>}
             </div>
             <div className="flex flex-row mt-2 w-full">
