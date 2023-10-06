@@ -2,6 +2,7 @@
 "use client";
 import { sendUSDC } from "@/utils/usdc";
 import { useState } from "react";
+import { toast } from 'react-toastify'
 
 interface WithdrawProps {
   eth_private: string;
@@ -14,9 +15,16 @@ const Withdraw = ({ eth_private }: WithdrawProps) => {
   const [status, setStatus] = useState("");
 
   const withdrawUSDC = async () => {
-    setStatus("withdrawing...");
-    await sendUSDC(eth_private || "", address, amount)
-    setStatus("SUCCEED");
+    // setStatus("withdrawing...");
+    await toast.promise(
+      sendUSDC(eth_private || "", address, amount),
+      {
+        pending: 'Transaction is pending',
+        success: 'Transaction is confirmed 👌',
+        error: 'Promise rejected 🤯'
+      }
+    );
+    // setStatus("SUCCEED");
   };
 
   return (
