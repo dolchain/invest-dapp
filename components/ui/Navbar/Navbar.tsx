@@ -3,6 +3,7 @@ import { createServerSupabaseClient } from '@/app/supabase-server';
 
 import Logo from '@/components/icons/Logo';
 import SignOutButton from './SignOutButton';
+import ResponsiveNavbar from './ResponsiveNavbar';
 
 import s from './Navbar.module.css';
 
@@ -18,37 +19,7 @@ export default async function Navbar() {
         Skip to content
       </a>
       <div className="max-w-6xl px-6 mx-auto">
-        <div className="relative flex flex-row justify-between py-4 align-center md:py-6">
-          <div className="flex items-center flex-1">
-            <Link href="/" className={s.logo} aria-label="Logo">
-              <Logo />
-            </Link>
-            <nav className="hidden ml-6 space-x-2 lg:block">
-              <Link href="/" className={s.link}>
-                {/* Pricing */}
-              </Link>
-              {user && (
-                <>
-                  <Link href="/account" className={s.link}>
-                    Account
-                  </Link>
-                  <Link href="/transaction" className={s.link}>
-                    Transaction
-                  </Link>
-                </>
-              )}
-            </nav>
-          </div>
-          <div className="flex justify-end flex-1 space-x-8">
-            {user ? (
-              <SignOutButton />
-            ) : (
-              <Link href="/signin" className={s.link}>
-                Sign in
-              </Link>
-            )}
-          </div>
-        </div>
+        <ResponsiveNavbar user={user} />
       </div>
     </nav>
   );
