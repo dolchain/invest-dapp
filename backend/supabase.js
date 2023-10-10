@@ -12,17 +12,20 @@ const supabaseAdmin = createClient(
 const Transfered = async (txHash, from, to, amount) => {
   if (from == null || to == null || amount == null) return;
 
-  // get user's detail from profiles table
+  let action = null;
+
+  //compare eth address with receiver(Deposit)
   try {        
     const { data: userDetail } = await supabaseAdmin
       .from('profiles')
       .select('*')
       .eq('eth_address', to)
       .single();
-    if(userDetail != null && userDetail != undefined){    
+    if(userDetail != null && userDetail != undefined){  
+      action = 'deposit'
       const profileData = {
         ...userDetail,
-        usdc_amount: userDetail?.usdc_amount + amount
+        account_usdc: userDetail?.account_usdc + amount
       };
       const {error} = await supabaseAdmin
         .from('profiles')
@@ -33,16 +36,23 @@ const Transfered = async (txHash, from, to, amount) => {
     console.log(err);
   }
 
+  // Compare eth address with sender(withdraw)
   try {        
   const { data: userDetail } = await supabaseAdmin
     .from('profiles')
     .select('*')
     .eq('eth_address', from)
     .single();
-    if(userDetail != null && userDetail != undefined){    
+    if(userDetail != null && userDetail != undefined){
+      action = 'withdraw'
+      // If receiver address is central wallet (invest)
+      if(to == process.env.NEXT_PUBLIC_CENTRAL_WALLET_ADDRESS)
+        action = 'invest'
+
       const profileData = {
         ...userDetail,
-        usdc_amount: userDetail?.usdc_amount - amount
+        account_usdc: userDetail?.account_usdc - amount,
+        invested_usdc: userDetail?.invested_usdc + (action == 'invest' ? amount : 0),
       };
       const {error} = await supabaseAdmin
         .from('profiles')
@@ -53,13 +63,16 @@ const Transfered = async (txHash, from, to, amount) => {
     console.log(err);
   }
 
+  // Insert one tx into the tx table
+  if(action == null)  return;
   try{
     const transactionData = {
       txHash: txHash,
       from: from,
       to: to,
       amount: amount,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      action: action,
     }
     const { data, err } = await supabaseAdmin
       .from('transactions')

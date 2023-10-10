@@ -64,7 +64,7 @@ export default async function Account() {
                 <div className="mb-4 flex-grow">
                   <label className="block text-sm font-medium text-gray-700">Account wallet Balance</label>
                   <div className="mt-1">
-                    <span className="text-sm text-gray-500">{userDetail.usdc_amount}</span>
+                    <span className="text-sm text-gray-500">{userDetail.account_usdc}</span>
                   </div>
                 </div>
               </div>
@@ -78,7 +78,7 @@ export default async function Account() {
                 <div className="mb-4 flex-grow">
                   <label className="block text-sm font-medium text-gray-700">Invested Balance</label>
                   <div className="mt-1">
-                    <span className="text-sm text-gray-500">{userDetail.usdc_amount}</span>
+                    <span className="text-sm text-gray-500">{userDetail.invested_usdc}</span>
                   </div>
                 </div>
               </div>
@@ -96,7 +96,7 @@ export default async function Account() {
                 <WagmiConfigProvider>
                   <WithMetamask eth_address={userDetail.eth_address || ""} />
                 </WagmiConfigProvider>
-                </div>
+              </div>
               <Withdraw eth_private={userDetail.eth_private_key || ""} />
             </div>
             <div className="flex flex-col sm:flex-row sm:space-x-6">

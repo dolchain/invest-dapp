@@ -25,6 +25,13 @@ export default async function Account() {
   const [userDetail] = user ? await Promise.all([getUserDetail(user.id)]) : [];
   const [transactions] = user ? await Promise.all([getTransactions(userDetail?.eth_address || null)]) : [];
 
+  const actionColors: Record<string, string> = {
+    'deposit': "text-green-500",
+    'withdraw': "text-yellow-500",
+    'invest': "text-indigo-500",
+    'uninvest': "text-red-500",
+  }
+
   return (
     <section className="mb-32 bg-black">
       <div className="max-w-6xl px-4 py-8 mx-auto sm:px-6 sm:pt-24 lg:px-8">
@@ -44,6 +51,7 @@ export default async function Account() {
               <th className="px-4 py-2 text-left">Transaction Hash</th>
               <th className="px-4 py-2 text-left">Sender</th>
               <th className="px-4 py-2 text-left">Receiver</th>
+              <th className="px-4 py-2 text-left">Action</th>
               <th className="px-4 py-2 text-left">Amount</th>
               <th className="px-4 py-2 text-left">Timestamp</th>
             </tr>
@@ -59,8 +67,9 @@ export default async function Account() {
                 </td>
                 <td className="border px-4 py-2"><CopyableAddress address={transaction.from || ""} /></td>
                 <td className="border px-4 py-2"><CopyableAddress address={transaction.to || ""} /></td>
-                <td className={cn('border', 'px-4', 'py-2', transaction.from == userDetail?.eth_address ? 'text-red-400' : 'text-green-400')}>
-                  {transaction.amount}</td>
+                <td className={cn('border', 'px-4', 'py-2', actionColors[transaction.action || ""])}>
+                  {transaction.action}</td>
+                <td className="border px-4 py-2 text-white-400">{transaction.amount}</td>
                 <td className="border px-4 py-2 text-white-400">{transaction.timestamp}</td>
               </tr>
             ))}

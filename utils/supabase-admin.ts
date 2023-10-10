@@ -54,7 +54,8 @@ export const getUserDetail = async (id: Profile['id']) => {
         ...userDetail,
         eth_address: wallet.address,
         eth_private_key: privateKey,
-        usdc_amount: 0
+        account_usdc: 0,
+        invested_usdc: 0
       };
       const { error } = await supabaseAdmin
         .from('profiles')
@@ -85,7 +86,7 @@ export const getTransactions = async (receiver: Transaction['to']) => {
       .from('transactions')
       .select('*')
       .eq('from', receiver);
-    return [...depositTxs || [], ...withdrawTxs || []].sort((A,B) => new Date(A.timestamp || 0).getTime() - new Date(B.timestamp || 0).getTime());
+    return [...depositTxs || [], ...withdrawTxs || []].sort((A, B) => new Date(A.timestamp || 0).getTime() - new Date(B.timestamp || 0).getTime());
   } catch (error) {
     console.error('Error:', error);
     return null;
