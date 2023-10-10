@@ -47,7 +47,7 @@ const ResponsiveNavbar = ({ user }: Props) => {
               <div
                 className={`bg-black absolute flex-1 justify-self-center mt-10 mr-20 sm:hidden ${navbar ? "block" : "hidden"
                   }`}
-                onClick={() => setNavbar(false)}     
+                onClick={() => setNavbar(false)}
               >
                 <ul className="items-center justify-center space-y-2">
                   {menu.map(({ name, url }, index) => (
