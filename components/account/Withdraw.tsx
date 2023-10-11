@@ -12,7 +12,6 @@ const Withdraw = ({ eth_private }: WithdrawProps) => {
 
   const [address, setAddress] = useState("");
   const [amount, setAmount] = useState("0");
-  const [status, setStatus] = useState("");
 
   const withdrawUSDC = async () => {
     // setStatus("withdrawing...");
@@ -59,7 +58,6 @@ const Withdraw = ({ eth_private }: WithdrawProps) => {
             >
               Withdraw
             </button>
-            <p className="block text-sm font-medium text-gray-700 mr-4">{status}</p>
           </div>
 
         </div>
