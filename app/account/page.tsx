@@ -101,7 +101,7 @@ export default async function Account() {
             </div>
             <div className="flex flex-col sm:flex-row sm:space-x-6">
               <Invest eth_private={userDetail.eth_private_key || ""} />
-              <UnInvest eth_address={userDetail.eth_address || ""} />
+              <UnInvest userDetail={userDetail} />
             </div>
 
           </div>

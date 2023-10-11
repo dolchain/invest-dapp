@@ -16,6 +16,7 @@ export interface Database {
           eth_private_key: string | null
           id: string
           invested_usdc: number | null
+          uninvest_amount: number | null
           username: string | null
         }
         Insert: {
@@ -24,6 +25,7 @@ export interface Database {
           eth_private_key?: string | null
           id: string
           invested_usdc?: number | null
+          uninvest_amount?: number | null
           username?: string | null
         }
         Update: {
@@ -32,6 +34,7 @@ export interface Database {
           eth_private_key?: string | null
           id?: string
           invested_usdc?: number | null
+          uninvest_amount?: number | null
           username?: string | null
         }
         Relationships: [

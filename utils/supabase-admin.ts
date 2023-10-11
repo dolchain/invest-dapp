@@ -74,6 +74,33 @@ export const getUserDetail = async (id: Profile['id']) => {
 };
 
 
+export const sendUninvestRequest = async (id: Profile['id'], amount: Profile['uninvest_amount']) => {
+  try {
+    // get user's detail from profiles table
+    const { data: userDetail } = await supabaseAdmin
+      .from('profiles')
+      .select('*')
+      .eq('id', id)
+      .single();
+    console.log('userDetail', userDetail);
+    if (userDetail?.id) {
+      const profileData: Profile = {
+        ...userDetail,
+        uninvest_amount: amount || 0,
+      };
+      const { error } = await supabaseAdmin
+        .from('profiles')
+        .upsert([profileData]);
+      if (error) throw error;
+      return profileData;
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    return null;
+  }
+};
+
+
 export const getTransactions = async (receiver: Transaction['to']) => {
   try {
     if (receiver == null) return;
