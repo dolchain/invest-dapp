@@ -76,7 +76,7 @@ export const getUserDetail = async (id: Profile['id']) => {
 };
 
 
-export const sendUninvestRequest = async (id: Profile['id'], amount: Profile['uninvest_amount']) => {
+export const sendUninvestRequest = async (id: Profile['id'], amount: Profile['uninvest_usdc']) => {
   console.log(id, amount);
   try {
     // get user's detail from profiles table
@@ -89,7 +89,7 @@ export const sendUninvestRequest = async (id: Profile['id'], amount: Profile['un
     if (userDetail?.id) {
       const profileData: Profile = {
         ...userDetail,
-        uninvest_amount: amount || 0,
+        uninvest_usdc: amount || 0,
       };
       const { error } = await supabaseAdmin
         .from('profiles')

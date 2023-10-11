@@ -8,7 +8,7 @@ interface Props {
 }
 
 const UnInvest = ({ userDetail }: Props) => {
-  const [amount, setAmount] = useState(userDetail.uninvest_amount);
+  const [amount, setAmount] = useState(userDetail.uninvest_usdc);
 
   const requestUSDC = async () => {
     await toast.promise(
@@ -32,7 +32,7 @@ const UnInvest = ({ userDetail }: Props) => {
     <div className="mt-3 bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 flex-grow">
       <label className="block text-sm font-medium text-gray-700">Uninvest</label>
       <div className="mt-1">
-        {userDetail.uninvest_amount && <label className="block text-sm font-medium text-gray-700 py-2 mr-4">You already sent a request. you can update it.</label>}
+        {userDetail.uninvest_usdc && <label className="block text-sm font-medium text-gray-700 py-2 mr-4">You already sent a request. you can update it.</label>}
         <div className="flex items-center border rounded-md">
           <div id='sendUninvestForm'
             // ref='formRef' action={requestUSDC} 
@@ -62,7 +62,7 @@ const UnInvest = ({ userDetail }: Props) => {
               onClick={requestUSDC}
             >
               Submit Request
-              {/* {userDetail.uninvest_amount > 0 ? "Update Request" : "Send Request"} */}
+              {/* {userDetail.uninvest_usdc > 0 ? "Update Request" : "Send Request"} */}
             </button>
             {/* <ToastButton serverAction={requestUSDC} /> */}
           </div>

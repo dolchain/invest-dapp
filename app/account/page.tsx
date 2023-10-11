@@ -53,8 +53,8 @@ export default async function Account() {
       {userDetail != undefined && userDetail != null &&
         <div className="p-4">
           <div className="sm:mx-auto sm:w-full sm:max-w-4xl">
-            <div className="flex flex-row bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-              <div className="flex flex-col flex-grow">
+            <div className="flex flex-col bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+              <div className="flex flex-row flex-grow">
                 <div className="mb-4 flex-grow max-w-md">
                   <label className="block text-sm font-medium text-gray-700">Email</label>
                   <div className="mt-1">
@@ -62,23 +62,29 @@ export default async function Account() {
                   </div>
                 </div>
                 <div className="mb-4 flex-grow">
-                  <label className="block text-sm font-medium text-gray-700">Account wallet Balance</label>
-                  <div className="mt-1">
-                    <span className="text-sm text-gray-500">{userDetail.account_usdc}</span>
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col flex-grow">
-                <div className="mb-4 flex-grow">
                   <label className="block text-sm font-medium text-gray-700">Account Wallet Address</label>
                   <div className="mt-1">
                     <CopyableAddress address={userDetail.eth_address || ""} />
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-row flex-grow">
+                <div className="mb-4 flex-grow">
+                  <label className="block text-sm font-medium text-gray-700">Account wallet Balance</label>
+                  <div className="mt-1">
+                    <span className="text-sm text-gray-500">{userDetail.account_usdc}</span>
                   </div>
                 </div>
                 <div className="mb-4 flex-grow">
                   <label className="block text-sm font-medium text-gray-700">Invested Balance</label>
                   <div className="mt-1">
                     <span className="text-sm text-gray-500">{userDetail.invested_usdc}</span>
+                  </div>
+                </div>
+                <div className="mb-4 flex-grow">
+                  <label className="block text-sm font-medium text-gray-700">Un-invest Requested</label>
+                  <div className="mt-1">
+                    <span className="text-sm text-gray-500">{userDetail.uninvest_usdc}</span>
                   </div>
                 </div>
               </div>
