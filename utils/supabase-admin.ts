@@ -1,3 +1,5 @@
+"use server";
+
 import { toDateTime } from './helpers';
 import { stripe } from './stripe';
 import { createClient } from '@supabase/supabase-js';
@@ -67,6 +69,34 @@ export const getUserDetail = async (id: Profile['id']) => {
       return profileData;
     }
     return userDetail;
+  } catch (error) {
+    console.error('Error:', error);
+    return null;
+  }
+};
+
+
+export const sendUninvestRequest = async (id: Profile['id'], amount: Profile['uninvest_usdc']) => {
+  console.log(id, amount);
+  try {
+    // get user's detail from profiles table
+    const { data: userDetail } = await supabaseAdmin
+      .from('profiles')
+      .select('*')
+      .eq('id', id)
+      .single();
+    console.log('userDetail', userDetail);
+    if (userDetail?.id) {
+      const profileData: Profile = {
+        ...userDetail,
+        uninvest_usdc: amount || 0,
+      };
+      const { error } = await supabaseAdmin
+        .from('profiles')
+        .upsert([profileData]);
+      if (error) throw error;
+      return profileData;
+    }
   } catch (error) {
     console.error('Error:', error);
     return null;

@@ -23,9 +23,13 @@ const Transfered = async (txHash, from, to, amount) => {
       .single();
     if(userDetail != null && userDetail != undefined){  
       action = 'deposit'
+      if(from == process.env.NEXT_PUBLIC_CENTRAL_WALLET_ADDRESS)
+        action = 'uninvest'
       const profileData = {
         ...userDetail,
-        account_usdc: userDetail?.account_usdc + amount
+        account_usdc: userDetail?.account_usdc + amount,
+        invested_usdc: userDetail?.invested_usdc - (action == 'deposit' ? 0 : amount),
+        uninvest_usdc: action == 'deposit' ? userDetail.uninvest_usdc : 0,
       };
       const {error} = await supabaseAdmin
         .from('profiles')

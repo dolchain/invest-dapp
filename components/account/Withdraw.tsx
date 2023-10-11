@@ -12,7 +12,6 @@ const Withdraw = ({ eth_private }: WithdrawProps) => {
 
   const [address, setAddress] = useState("");
   const [amount, setAmount] = useState("0");
-  const [status, setStatus] = useState("");
 
   const withdrawUSDC = async () => {
     // setStatus("withdrawing...");
@@ -37,7 +36,7 @@ const Withdraw = ({ eth_private }: WithdrawProps) => {
               <label className="sr-only">Withdraw Address</label>
               <input
                 type="text"
-                className="bg-gray-700 text-sm text-gray-100 px-2 py-2 flex-grow"
+                className="bg-gray-300 text-sm text-gray-800 px-2 py-2 flex-grow"
                 placeholder="Withdraw Address"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
@@ -47,7 +46,7 @@ const Withdraw = ({ eth_private }: WithdrawProps) => {
               <label className="block text-sm font-medium text-gray-700 py-2 mr-4">Amount</label>
               <input
                 type="text"
-                className="bg-gray-700 text-sm text-gray-100 px-2 py-2 flex-grow"
+                className="bg-gray-300 text-sm text-gray-800 px-2 py-2 flex-grow"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
               />
@@ -59,7 +58,6 @@ const Withdraw = ({ eth_private }: WithdrawProps) => {
             >
               Withdraw
             </button>
-            <p className="block text-sm font-medium text-gray-700 mr-4">{status}</p>
           </div>
 
         </div>

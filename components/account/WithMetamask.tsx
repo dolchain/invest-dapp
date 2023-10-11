@@ -196,7 +196,7 @@ const WithMetamask = ({ eth_address }: Props) => {
               <label className="block text-sm font-medium text-gray-700 py-2 mr-4">Amount</label>
               <input
                 type="text"
-                className="bg-gray-700 text-sm text-gray-100 px-2 py-2 w-20 flex-grow"
+                className="bg-gray-300 text-sm text-gray-800 px-2 py-2 w-20 flex-grow"
                 value={depositAmount}
                 onChange={(e) => setDepositAmount(e.target.value)}
               />
