@@ -1,3 +1,5 @@
+"use server";
+
 import { toDateTime } from './helpers';
 import { stripe } from './stripe';
 import { createClient } from '@supabase/supabase-js';
@@ -75,6 +77,7 @@ export const getUserDetail = async (id: Profile['id']) => {
 
 
 export const sendUninvestRequest = async (id: Profile['id'], amount: Profile['uninvest_amount']) => {
+  console.log(id, amount);
   try {
     // get user's detail from profiles table
     const { data: userDetail } = await supabaseAdmin
