@@ -1,7 +1,6 @@
 "use server";
 const ethers = require('ethers')
-const { abi } = require('@/smart_contract/artifacts/contracts/USDCTestToken.sol/USDCTestToken.json')
-
+const { abi } = require('@/smart_contract/abis/usdcTestToken.json');
 const usdcAddress = "0xc493e7373757C759cf589731eE1cFaB80b13Ed7a";
 // require("dotenv").config();
 
