@@ -7,94 +7,9 @@ import { Web3Button } from "@web3modal/react";
 import { ethers } from "ethers";
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
+const { abi } = require('@/smart_contract/abis/usdcTestToken.json')
 
 const usdcAddress = "0xc493e7373757C759cf589731eE1cFaB80b13Ed7a";
-const usdcAbi = [
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-    ],
-    name: "balanceOf",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "spender",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-    ],
-    name: "approve",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-
-
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "transfer",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "faucetAmount",
-        type: "uint256",
-      },
-    ],
-    name: "faucet",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-];
 interface Props {
   eth_address: string;
 }
@@ -156,7 +71,7 @@ const WithMetamask = ({ eth_address }: Props) => {
       if (ethereum) {
         const web3Provider = new ethers.BrowserProvider(ethereum);
         const signer = await web3Provider.getSigner();
-        setUdscToken(new ethers.Contract(usdcAddress, usdcAbi, signer));
+        setUdscToken(new ethers.Contract(usdcAddress, abi, signer));
       } else {
         console.log("Ethereum object doesn't exist!");
       }
