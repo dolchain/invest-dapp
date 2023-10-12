@@ -34,8 +34,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
-, "components/StripeCryptoElements.jsx", "backend/index.js"  ],
+    ".next/types/**/*.ts",
+    "backend/index.js"  ],
   "exclude": [
     "node_modules"
   ]

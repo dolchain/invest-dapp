@@ -53,8 +53,8 @@ export default async function Account() {
       {userDetail != undefined && userDetail != null &&
         <div className="p-4">
           <div className="sm:mx-auto sm:w-full sm:max-w-4xl">
-            <div className="flex flex-col bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-              <div className="flex flex-row flex-grow">
+            <div className="flex flex-col bg-white py-8 px-4 shadow sm:px-10">
+              <div className="flex flex-col sm:flex-row flex-grow">
                 <div className="mb-4 flex-grow max-w-md">
                   <label className="block text-sm font-medium text-gray-700">Email</label>
                   <div className="mt-1">
@@ -68,7 +68,7 @@ export default async function Account() {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-row flex-grow">
+              <div className="flex flex-col sm:flex-row flex-grow">
                 <div className="mb-4 flex-grow">
                   <label className="block text-sm font-medium text-gray-700">Account wallet Balance</label>
                   <div className="mt-1">
@@ -97,8 +97,8 @@ export default async function Account() {
                 Withdraw
               </Link>
             </div> */}
-            <div className="flex flex-col sm:flex-row sm:space-x-6 ">
-              <div className='flex-grow'>
+            <div className="flex flex-col sm:flex-row sm:space-x-3 ">
+              <div className='sm:w-1/2 sm:pr-3'>
                 <WagmiConfigProvider>
                   <WithMetamask eth_address={userDetail.eth_address || ""} />
                 </WagmiConfigProvider>

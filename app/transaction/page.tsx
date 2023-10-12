@@ -53,8 +53,8 @@ export default async function Account() {
               <th className="px-4 py-2 text-left">Receiver</th>
               <th className="px-4 py-2 text-left">Action</th>
               <th className="px-4 py-2 text-left">Amount</th>
-              <th className="px-4 py-2 text-left">Age</th>
-              {/* <th className="px-4 py-2 text-left">Timestamp</th> */}
+              {/* <th className="px-4 py-2 text-left">Age</th> */}
+              <th className="px-4 py-2 text-left">Timestamp</th>
             </tr>
           </thead>
           <tbody>
