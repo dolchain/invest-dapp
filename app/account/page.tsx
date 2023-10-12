@@ -103,10 +103,12 @@ export default async function Account() {
                   <WithMetamask eth_address={userDetail.eth_address || ""} />
                 </WagmiConfigProvider>
               </div>
-              <Withdraw eth_private={userDetail.eth_private_key || ""} />
+              <Withdraw userDetail={userDetail} />
             </div>
-            <div className="flex flex-col sm:flex-row sm:space-x-6">
-              <Invest eth_private={userDetail.eth_private_key || ""} />
+            <div className="flex flex-col sm:flex-row sm:space-x-3">
+              <div className='sm:w-1/2 sm:pr-3'>
+                <Invest userDetail={userDetail} />
+              </div>
               <UnInvest userDetail={userDetail} />
             </div>
 

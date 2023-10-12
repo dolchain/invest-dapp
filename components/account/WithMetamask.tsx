@@ -27,38 +27,35 @@ const WithMetamask = ({ eth_address }: Props) => {
   const { address, isConnected } = useAccount();
   const [balance, setBalance] = useState("-1");
   const [depositAmount, setDepositAmount] = useState("0");
+  const [error, setError] = useState("");
   const [usdcToken, setUdscToken] = useState<ethers.Contract | null>(null);
 
   const depositUSDC = async () => {
 
+    if (parseFloat(depositAmount) == 0 || parseFloat(depositAmount) > parseFloat(balance) || depositAmount == '') {
+      setError('Please put the correct value');
+      return;
+    }
+
     try {
-      console.log("Poping up the metamask to confirm the gas fee");
+      // console.log("Poping up the metamask to confirm the gas fee");
       const amount = ethers.parseUnits(depositAmount, 6);
       const depositTxn = await usdcToken?.transfer(eth_address, amount);
-      console.log("Depositing...please wait.");
+      // console.log("Depositing...please wait.");
       await toast.promise(
         depositTxn.wait(),
         {
           pending: 'Transaction is pending',
           success: 'Transaction is confirmed 👌',
-          error: 'Promise rejected 🤯'
+          error: 'Transaction rejected 🤯'
         }
       );
-      // console.log(response)
-      // await depositTxn.wait();
-      console.log(
-        `Deposit function called successfully.\nYou can check on https://sepolia.etherscan.io/tx/${depositTxn.hash}`
-      );
+      console.log(`Deposit function called successfully.\nYou can check on https://sepolia.etherscan.io/tx/${depositTxn.hash}`);
       updateBlance();
-      setTimeout(() => {
-        console.log("");
-      }, 5000);
     } catch (error) {
-      console.log("Error");
-      console.log(error);
-      setTimeout(() => {
-        console.log("");
-      }, 5000);
+      toast.error("Transaction rrejected 🤯")
+      // console.log("Error");
+      // console.log(error);
     }
   };
 
@@ -108,7 +105,7 @@ const WithMetamask = ({ eth_address }: Props) => {
         <Web3Button />
         {balance != '-1' && <div className="block text-sm font-medium text-gray-700 py-3 ml-4">{balance}</div>}
       </div>
-      <StyledInput label="Amount" value={depositAmount} setValue={setDepositAmount} />
+      <StyledInput label="Amount" value={depositAmount} setValue={setDepositAmount} error={error} setError={setError} />
       <StyledButton text="Deposit" onClickHandler={depositUSDC} />
     </StyledBox>
   );

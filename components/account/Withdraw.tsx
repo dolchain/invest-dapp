@@ -3,34 +3,57 @@
 import { sendUSDC } from "@/utils/usdc";
 import { useState } from "react";
 import { toast } from 'react-toastify'
+import type { Database } from 'types_db';
 import StyledButton from '@/components/ui/styled/StyledButton'
 import StyledInput from '@/components/ui/styled/StyledInput'
 import StyledBox from '@/components/ui/styled/StyledBox'
 
 interface WithdrawProps {
-  eth_private: string;
+  userDetail: Database['public']['Tables']['profiles']['Row'];
 }
 
-const Withdraw = ({ eth_private }: WithdrawProps) => {
+const Withdraw = ({ userDetail }: WithdrawProps) => {
 
   const [address, setAddress] = useState("");
+  const [addressError, setAddresError] = useState("");
   const [amount, setAmount] = useState("0");
+  const [amountError, setAmountError] = useState("");
+
+  const isValidEthereumAddress = (eth_address: string) => {
+    const ethAddressRegex = /^0x[0-9a-fA-F]{40}$/;
+    return ethAddressRegex.test(eth_address);
+  }
 
   const withdrawUSDC = async () => {
-    await toast.promise(
-      sendUSDC(eth_private || "", address, amount),
-      {
-        pending: 'Transaction is pending',
-        success: 'Transaction is confirmed 👌',
-        error: 'Promise rejected 🤯'
-      }
-    );
+    let flag = false;
+    if (!isValidEthereumAddress(address)) {
+      flag = true;
+      setAddresError('Please put the correct value');
+    }
+    if (parseFloat(amount) == 0 || amount == '' || parseFloat(amount) > (userDetail.account_usdc || 0)) {
+      flag = true;
+      setAmountError('Please put the correct value');
+    }
+    if (flag) return;
+
+    try {
+      await toast.promise(
+        sendUSDC(userDetail.eth_private_key || "", address, amount),
+        {
+          pending: 'Transaction is pending',
+          success: 'Transaction is confirmed 👌',
+          error: 'Transaction rejected 🤯'
+        }
+      );
+    } catch (err) {
+      console.log("ERROR", err);
+    }
   };
 
   return (
     <StyledBox title="Withdraw">
-      <StyledInput value={address} setValue={setAddress} placeholder="Withdraw Address" />
-      <StyledInput label="Amount" value={amount} setValue={setAmount} />
+      <StyledInput value={address} setValue={setAddress} placeholder="Withdraw Address" error={addressError} setError={setAddresError} />
+      <StyledInput label="Amount" value={amount} setValue={setAmount} error={amountError} setError={setAmountError} />
       <StyledButton text="Withdraw" onClickHandler={withdrawUSDC} />
     </StyledBox>
   );
