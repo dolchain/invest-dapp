@@ -7,6 +7,10 @@ import { Web3Button } from "@web3modal/react";
 import { ethers } from "ethers";
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
+import StyledButton from '@/components/ui/styled/StyledButton'
+import StyledInput from '@/components/ui/styled/StyledInput'
+import StyledBox from '@/components/ui/styled/StyledBox'
+
 const { abi } = require('@/smart_contract/abis/usdcTestToken.json')
 
 const usdcAddress = "0xc493e7373757C759cf589731eE1cFaB80b13Ed7a";
@@ -23,38 +27,35 @@ const WithMetamask = ({ eth_address }: Props) => {
   const { address, isConnected } = useAccount();
   const [balance, setBalance] = useState("-1");
   const [depositAmount, setDepositAmount] = useState("0");
+  const [error, setError] = useState("");
   const [usdcToken, setUdscToken] = useState<ethers.Contract | null>(null);
 
   const depositUSDC = async () => {
 
+    if (parseFloat(depositAmount) == 0 || parseFloat(depositAmount) > parseFloat(balance) || depositAmount == '') {
+      setError('Please put the correct value');
+      return;
+    }
+
     try {
-      console.log("Poping up the metamask to confirm the gas fee");
+      // console.log("Poping up the metamask to confirm the gas fee");
       const amount = ethers.parseUnits(depositAmount, 6);
       const depositTxn = await usdcToken?.transfer(eth_address, amount);
-      console.log("Depositing...please wait.");
+      // console.log("Depositing...please wait.");
       await toast.promise(
         depositTxn.wait(),
         {
           pending: 'Transaction is pending',
           success: 'Transaction is confirmed 👌',
-          error: 'Promise rejected 🤯'
+          error: 'Transaction rejected 🤯'
         }
       );
-      // console.log(response)
-      // await depositTxn.wait();
-      console.log(
-        `Deposit function called successfully.\nYou can check on https://sepolia.etherscan.io/tx/${depositTxn.hash}`
-      );
+      console.log(`Deposit function called successfully.\nYou can check on https://sepolia.etherscan.io/tx/${depositTxn.hash}`);
       updateBlance();
-      setTimeout(() => {
-        console.log("");
-      }, 5000);
     } catch (error) {
-      console.log("Error");
-      console.log(error);
-      setTimeout(() => {
-        console.log("");
-      }, 5000);
+      toast.error("Transaction rrejected 🤯")
+      // console.log("Error");
+      // console.log(error);
     }
   };
 
@@ -98,35 +99,15 @@ const WithMetamask = ({ eth_address }: Props) => {
   }, [isConnected]);
 
   return (
-    <div className="mt-3 bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-      <label className="block text-sm font-medium text-gray-700">Deposit with Crypto Wallet</label>
-      <div className="mt-1">
-        <div className="flex items-center border rounded-md">
-          <div className="flex flex-col w-full">
-            <div className="flex flex-row w-full justify-center">
-              <Web3Button />
-              {balance != '-1' && <div className="block text-sm font-medium text-gray-700 py-3 ml-4">Balance: {balance}</div>}
-            </div>
-            <div className="flex flex-row mt-2 w-full">
-              <label className="block text-sm font-medium text-gray-700 py-2 mr-4">Amount</label>
-              <input
-                type="text"
-                className="bg-gray-300 text-sm text-gray-800 px-2 py-2 w-20 flex-grow"
-                value={depositAmount}
-                onChange={(e) => setDepositAmount(e.target.value)}
-              />
-            </div>
-            <button
-              className="bg-blue-500 text-white px-2 py-2 mt-2 w-full hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-              onClick={depositUSDC}
-            >
-              Deposit
-            </button>
-          </div>
 
-        </div>
+    <StyledBox title="Deposit With Metamask">
+      <div className="flex flex-row w-full justify-center">
+        <Web3Button />
+        {balance != '-1' && <div className="block text-sm font-medium text-gray-700 py-3 ml-4">{balance}</div>}
       </div>
-    </div>
+      <StyledInput label="Amount" value={depositAmount} setValue={setDepositAmount} error={error} setError={setError} />
+      <StyledButton text="Deposit" onClickHandler={depositUSDC} />
+    </StyledBox>
   );
 }
 
