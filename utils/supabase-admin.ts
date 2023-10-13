@@ -57,7 +57,8 @@ export const getUserDetail = async (id: Profile['id']) => {
         eth_address: wallet.address,
         eth_private_key: privateKey,
         account_usdc: 0,
-        invested_usdc: 0
+        invested_usdc: 0,
+        uninvest_usdc: 0,
       };
       const { error } = await supabaseAdmin
         .from('profiles')
