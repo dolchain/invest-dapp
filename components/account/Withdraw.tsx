@@ -52,7 +52,7 @@ const Withdraw = ({ userDetail }: WithdrawProps) => {
 
   return (
     <StyledBox title="Withdraw">
-      <StyledInput value={address} setValue={setAddress} placeholder="Withdraw Address" error={addressError} setError={setAddresError} />
+      <StyledInput label="Address" value={address} setValue={setAddress} placeholder="Withdraw Address" error={addressError} setError={setAddresError} />
       <StyledInput label="Amount" value={amount} setValue={setAmount} error={amountError} setError={setAmountError} />
       <StyledButton text="Withdraw" onClickHandler={withdrawUSDC} />
     </StyledBox>
