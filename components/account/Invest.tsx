@@ -24,7 +24,7 @@ const Invest = ({ userDetail }: InvestProps) => {
     }
     try {
       await toast.promise(
-        sendUSDC(userDetail.eth_private_key || "", process.env.NEXT_PUBLIC_CENTRAL_WALLET_ADDRESS || "", amount),
+        sendUSDC(userDetail.id || "", process.env.NEXT_PUBLIC_CENTRAL_WALLET_ADDRESS || "", amount),
         {
           pending: 'Transaction is pending',
           success: 'Transaction is confirmed 👌',
