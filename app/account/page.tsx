@@ -28,7 +28,7 @@ import UnInvest from '@/components/account/UnInvest';
 
 const stripeOnrampPromise = loadStripeOnramp("pk_test_51NtMMKAo4s8oHTt3DNSMT4ReRVNVIjWni3m5muZe6ldTk3iN3GuRBWQvOVJ5VgAxLMtJvKDaKeimqTlazkkbl9N600CwO4E3FF");
 
-export const revalidate = 0
+// export const revalidate = 0
 
 export default async function Account() {
   // IMPORTANT: replace with your logic of how to mint/retrieve client secret
