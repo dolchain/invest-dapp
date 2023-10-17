@@ -1,4 +1,5 @@
 "use server";
+import { getSenderPrivatefromId } from './supabase-admin'
 const ethers = require('ethers')
 const { abi } = require('@/smart_contract/abis/usdcTestToken.json');
 const usdcAddress = "0xc493e7373757C759cf589731eE1cFaB80b13Ed7a";
@@ -18,13 +19,14 @@ export async function sendEther(receiverAddress: string, amountInEther: string) 
     to: receiverAddress,
     // Convert currency unit from ether to wei
     value: ethers.parseEther(amountInEther),
-    gasPrice: provider.getGasPrice().mul(2), // This line increases the gas price by 100%.
-    gasLimit: ethers.bigNumberify("21000") // 21,000 is the standard gas limit for a simple ETH transfer. Adjust if you're calling a contract method.
   }
   // Send a transaction
   await wallet.sendTransaction(tx)
     .then((txObj: any) => {
       console.log('txHash', txObj.hash)
+    })
+    .catch((err: Error) => {
+      console.log("ERROR:", err)
     })
 }
 
@@ -39,7 +41,8 @@ export async function sendEther(receiverAddress: string, amountInEther: string) 
 //   return balance;
 // }
 
-export async function sendUSDC(senderPrivate: string, receiverAddress: string, amountInUSD: string) {
+export async function sendUSDC(senderId: string, receiverAddress: string, amountInUSD: string) {
+  const senderPrivate = await getSenderPrivatefromId(senderId) || "";
   console.log(senderPrivate, receiverAddress, amountInUSD)
   const amount = ethers.parseUnits(amountInUSD, 6); // Example: Lock 10 USDC with 6 decimal places
 

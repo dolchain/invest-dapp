@@ -21,7 +21,7 @@ const Transfered = async (txHash, from, to, amount) => {
       .single();
     if(userDetail != null && userDetail != undefined){  
       action = 'deposit'
-      if(from == process.env.NEXT_PUBLIC_CENTRAL_WALLET_ADDRESS)
+      if(from == process.env.CENTRAL_WALLET_ADDRESS)
         action = 'uninvest'
       const profileData = {
         ...userDetail,
@@ -48,7 +48,7 @@ const Transfered = async (txHash, from, to, amount) => {
     if(userDetail != null && userDetail != undefined){
       action = 'withdraw'
       // If receiver address is central wallet (invest)
-      if(to == process.env.NEXT_PUBLIC_CENTRAL_WALLET_ADDRESS)
+      if(to == process.env.CENTRAL_WALLET_ADDRESS)
         action = 'invest'
 
       const profileData = {

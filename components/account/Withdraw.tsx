@@ -38,7 +38,7 @@ const Withdraw = ({ userDetail }: WithdrawProps) => {
 
     try {
       await toast.promise(
-        sendUSDC(userDetail.eth_private_key || "", address, amount),
+        sendUSDC(userDetail.id || "", address, amount),
         {
           pending: 'Transaction is pending',
           success: 'Transaction is confirmed 👌',
@@ -52,7 +52,7 @@ const Withdraw = ({ userDetail }: WithdrawProps) => {
 
   return (
     <StyledBox title="Withdraw">
-      <StyledInput label="Address" value={address} setValue={setAddress} placeholder="Withdraw Address" error={addressError} setError={setAddresError} />
+      <StyledInput label="Address" value={address} setValue={setAddress} placeholder="Withdrawal Address" error={addressError} setError={setAddresError} />
       <StyledInput label="Amount" value={amount} setValue={setAmount} error={amountError} setError={setAmountError} />
       <StyledButton text="Withdraw" onClickHandler={withdrawUSDC} />
     </StyledBox>

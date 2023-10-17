@@ -19,6 +19,21 @@ const supabaseAdmin = createClient<Database>(
   process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 );
 
+export const getSenderPrivatefromId = async (id: Profile['id']) => {
+  try {
+    const { data: user } = await supabaseAdmin
+      .from('profiles')
+      .select('eth_private_key')
+      .eq('id', id)
+      .single();
+    // console.log('userDetails', userDetails);
+    return user?.eth_private_key;
+  } catch (error) {
+    console.error('Error:', error);
+    return null;
+  }
+};
+
 export const getUserDetails = async () => {
   try {
     const { data: userDetails } = await supabaseAdmin
@@ -77,7 +92,7 @@ export const getUserDetail = async (id: Profile['id']) => {
 };
 
 
-export const sendUninvestRequest = async (userDetail: Profile,  amount: Profile['uninvest_usdc']) => {
+export const sendUninvestRequest = async (userDetail: Profile, amount: Profile['uninvest_usdc']) => {
   console.log(userDetail?.id, amount);
   try {
     if (userDetail?.id) {
