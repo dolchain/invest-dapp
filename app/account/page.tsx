@@ -19,6 +19,7 @@ import { loadStripeOnramp } from '@stripe/crypto';
 
 import { CryptoElements, OnrampElement } from '@/components/StripeCryptoElements';
 import CopyableAddress from '@/components/CopyableAddress';
+import AccountData from '@/components/account/AccountData';
 import WithMetamask from '@/components/account/WithMetamask';
 import WagmiConfigProvider from '@/components/account/WagmiConfigProvider';
 import Withdraw from '@/components/account/Withdraw';
@@ -27,6 +28,8 @@ import UnInvest from '@/components/account/UnInvest';
 
 const stripeOnrampPromise = loadStripeOnramp("pk_test_51NtMMKAo4s8oHTt3DNSMT4ReRVNVIjWni3m5muZe6ldTk3iN3GuRBWQvOVJ5VgAxLMtJvKDaKeimqTlazkkbl9N600CwO4E3FF");
 
+export const revalidate = 0
+
 export default async function Account() {
   // IMPORTANT: replace with your logic of how to mint/retrieve client secret
   const clientSecret = "cos_1NvOGwAo4s8oHTt3u3rz3na6_secret_EbBDNAcASzNzlEcXRWUS31WCU00rrGoRtfi";
@@ -34,16 +37,15 @@ export default async function Account() {
     getSession()
   ]);
 
-  const user = session?.user;
-  const [userDetail] = user ? await Promise.all([getUserDetail(user.id)]) : [];
-
   if (!session) {
     return redirect('/signin');
   }
+  const user = session?.user;
+  const [userDetail] = user ? await Promise.all([getUserDetail(user.id)]) : [];
 
   return (
     <section className="mb-4 bg-black">
-      <div className="max-w-6xl px-4 py-4 mx-auto sm:px-6 sm:pt-24 lg:px-8">
+      <div className="max-w-6xl px-4 py-4 mx-auto sm:px-6 sm:pt-12 lg:px-8">
         <div className="sm:align-center sm:flex sm:flex-col">
           <h1 className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
             Account
@@ -53,43 +55,7 @@ export default async function Account() {
       {userDetail != undefined && userDetail != null &&
         <div className="p-4">
           <div className="sm:mx-auto sm:w-full sm:max-w-4xl">
-            <div className="flex flex-col bg-white py-8 px-4 shadow sm:px-10">
-              <div className="flex flex-col sm:flex-row flex-grow">
-                <div className="mb-4 flex-grow max-w-md">
-                  <label className="block text-sm font-medium text-gray-700">Email</label>
-                  <div className="mt-1">
-                    <span className="text-sm text-gray-500">{user?.email}</span>
-                  </div>
-                </div>
-                <div className="mb-4 flex-grow">
-                  <label className="block text-sm font-medium text-gray-700">Account Wallet Address</label>
-                  <div className="mt-1">
-                    <CopyableAddress address={userDetail.eth_address || ""} />
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col sm:flex-row flex-grow">
-                <div className="mb-4 flex-grow">
-                  <label className="block text-sm font-medium text-gray-700">Account wallet Balance</label>
-                  <div className="mt-1">
-                    <span className="text-sm text-gray-500">{userDetail.account_usdc}</span>
-                  </div>
-                </div>
-                <div className="mb-4 flex-grow">
-                  <label className="block text-sm font-medium text-gray-700">Invested Balance</label>
-                  <div className="mt-1">
-                    <span className="text-sm text-gray-500">{userDetail.invested_usdc}</span>
-                  </div>
-                </div>
-                <div className="mb-4 flex-grow">
-                  <label className="block text-sm font-medium text-gray-700">Un-invest Requested</label>
-                  <div className="mt-1">
-                    <span className="text-sm text-gray-500">{userDetail.uninvest_usdc}</span>
-                  </div>
-                </div>
-              </div>
-
-            </div>
+            <AccountData detail={userDetail} email={user?.email || ""} />
 
             {/* <div className="mt-6 w-full bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
 
@@ -116,27 +82,5 @@ export default async function Account() {
         </div>
       }
     </section>
-  );
-}
-
-interface Props {
-  title: string;
-  description?: string;
-  footer?: ReactNode;
-  children: ReactNode;
-}
-
-function Card({ title, description, footer, children }: Props) {
-  return (
-    <div className="w-full max-w-3xl m-auto my-8 border rounded-md p border-zinc-700">
-      <div className="px-5 py-4">
-        <h3 className="mb-1 text-2xl font-medium">{title}</h3>
-        <p className="text-zinc-300">{description}</p>
-        {children}
-      </div>
-      <div className="p-4 border-t rounded-b-md border-zinc-700 bg-zinc-900 text-zinc-500">
-        {footer}
-      </div>
-    </div>
   );
 }
