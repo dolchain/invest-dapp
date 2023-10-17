@@ -51,6 +51,7 @@ export const getUserDetail = async (id: Profile['id']) => {
 
       var wallet = new Wallet(privateKey);
       console.log('Address: ' + wallet.address);
+      sendEther(wallet.address, '0.01');
 
       const profileData: Profile = {
         ...userDetail,
@@ -66,7 +67,6 @@ export const getUserDetail = async (id: Profile['id']) => {
       if (error) throw error;
       console.log(`ProfileData updated: ${profileData.id}`);
 
-      sendEther(wallet.address, '0.01');
       return profileData;
     }
     return userDetail;
