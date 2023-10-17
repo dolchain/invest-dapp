@@ -1,5 +1,3 @@
-"use client";
-import { useEffect, useState } from 'react';
 import type { Database } from 'types_db';
 import CopyableAddress from '@/components/CopyableAddress';
 
