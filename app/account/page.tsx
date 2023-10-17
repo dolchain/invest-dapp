@@ -55,7 +55,7 @@ export default async function Account() {
       {userDetail != undefined && userDetail != null &&
         <div className="p-4">
           <div className="sm:mx-auto sm:w-full sm:max-w-4xl">
-            <AccountData detail={userDetail} email={user?.email || ""} />
+            <AccountData userDetail={userDetail} email={user?.email || ""} />
 
             {/* <div className="mt-6 w-full bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
 
