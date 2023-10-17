@@ -18,13 +18,14 @@ export async function sendEther(receiverAddress: string, amountInEther: string) 
     to: receiverAddress,
     // Convert currency unit from ether to wei
     value: ethers.parseEther(amountInEther),
-    gasPrice: provider.getGasPrice().mul(2), // This line increases the gas price by 100%.
-    gasLimit: ethers.bigNumberify("21000") // 21,000 is the standard gas limit for a simple ETH transfer. Adjust if you're calling a contract method.
   }
   // Send a transaction
   await wallet.sendTransaction(tx)
     .then((txObj: any) => {
       console.log('txHash', txObj.hash)
+    })
+    .catch((err: Error) => {
+      console.log("ERROR:", err)
     })
 }
 
