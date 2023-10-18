@@ -1,7 +1,7 @@
 
 "use client";
-import { sendUSDC } from "@/utils/usdc";
-import { useState } from "react";
+import { gasToSendUSDC, sendUSDC } from "@/utils/usdc";
+import { useState, useEffect } from "react";
 import { toast } from 'react-toastify'
 import type { Database } from 'types_db';
 import StyledButton from '@/components/ui/styled/StyledButton'
@@ -18,19 +18,41 @@ const Withdraw = ({ userDetail }: WithdrawProps) => {
   const [addressError, setAddressError] = useState("");
   const [amount, setAmount] = useState("0");
   const [amountError, setAmountError] = useState("");
+  const [gas, setGas] = useState("");
+  const [usd, setUSD] = useState(0);
 
-  const isValidEthereumAddress = (eth_address: string) => {
+  const isValidEthereumAddress = () => {
     const ethAddressRegex = /^0x[0-9a-fA-F]{40}$/;
-    return ethAddressRegex.test(eth_address) && eth_address != userDetail.eth_address;
+    return ethAddressRegex.test(address) && address != userDetail.eth_address;
   }
+
+  const isValidWithdrawalAmount = () => {
+    return parseFloat(amount) != 0 && amount != '' && (userDetail.account_usdc != null ? (parseFloat(amount) <= userDetail.account_usdc) : true)
+  }
+
+  const getEstimatedGas = async () => {
+    const estimatedGas = await gasToSendUSDC(amount);
+    console.log(typeof estimatedGas);
+    setGas(estimatedGas.eth);
+    setUSD(estimatedGas.usd);
+  }
+
+  useEffect(() => {
+    setGas("");
+    if (isValidEthereumAddress() && isValidWithdrawalAmount()) {
+      console.log(amount);
+      getEstimatedGas();
+    }
+  }, [amount, address])
+
 
   const withdrawUSDC = async () => {
     let flag = false;
-    if (!isValidEthereumAddress(address)) {
+    if (!isValidEthereumAddress()) {
       flag = true;
       setAddressError('Please put the correct value');
     }
-    if (parseFloat(amount) == 0 || amount == '' || parseFloat(amount) > (userDetail.account_usdc || 0)) {
+    if (!isValidWithdrawalAmount()) {
       flag = true;
       setAmountError('Please put the correct value');
     }
@@ -54,6 +76,9 @@ const Withdraw = ({ userDetail }: WithdrawProps) => {
     <StyledBox title="Withdraw">
       <StyledInput label="Address" value={address} setValue={setAddress} placeholder="Withdrawal Address" error={addressError} setError={setAddressError} />
       <StyledInput label="Amount" value={amount} setValue={setAmount} error={amountError} setError={setAmountError} />
+      <div>
+        {gas && <label className="block text-sm font-medium text-gray-700 py-2">Estimated Gas Fee: <b>{gas.substring(0, 9)} ETH ~ ${usd.toString().substring(0,5)}</b></label>}
+      </div>
       <StyledButton text="Withdraw" onClickHandler={withdrawUSDC} />
     </StyledBox>
   );

@@ -5,13 +5,27 @@ const { abi } = require('@/smart_contract/abis/usdcTestToken.json');
 const usdcAddress = "0xc493e7373757C759cf589731eE1cFaB80b13Ed7a";
 // require("dotenv").config();
 
+let ethUSD = 1565.11
+
+fetch('https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD')
+  .then((response) => {
+    return response.json();
+  })
+  .then((data) => {
+    console.log(data);
+    ethUSD = data.USD;
+  })
+  .catch((error) => {
+    console.log("Fetch Error", error);
+  })
+
 const provider = new ethers.JsonRpcProvider(
   process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL
 );
 const wallet = new ethers.Wallet(process.env.WALLET_PRIVATE_KEY, provider);
 
 const usdcToken = new ethers.Contract(usdcAddress, abi, provider)
-// const usdcTokenWithWallet = usdcToken.connect(wallet);
+const usdcTokenWithWallet = usdcToken.connect(wallet);
 
 export async function sendEther(receiverAddress: string, amountInEther: string) {
   // Create a transaction object
@@ -30,16 +44,21 @@ export async function sendEther(receiverAddress: string, amountInEther: string) 
     })
 }
 
-// export async function getBalanceOf(address: string) {
-//   const wallet = new ethers.Wallet(process.env.WALEET_PRIVATE_KEY, provider);
+export async function gasToSendUSDC(amountInUSD: string) {
+  const amount = ethers.parseUnits(amountInUSD, 6); // Example: Lock 10 USDC with 6 decimal places
+  const gasPrice = (await provider.getFeeData()).gasPrice
+  const functionGasFees = await usdcTokenWithWallet.transfer.estimateGas(wallet.address, amount);
+  const finalGasPrice = (BigInt('1000000000') + gasPrice) * functionGasFees;
+  console.log("gasToSendUSDC", gasPrice, functionGasFees, finalGasPrice);
 
-//   // Load the USDC token contract
-//   const usdcToken = new ethers.Contract(usdcAddress, [
-//     "function balanceOf(address owner) view returns (uint256)",
-//   ]).connect(wallet);
-//   const balance = await usdcToken.balanceOf(address);
-//   return balance;
-// }
+  // const transferTx = await usdcTokenWithWallet.transfer(receiverAddress, amount);
+
+  // const estimatedGas = await wallet.estimateGas(transferTx);
+  return {
+    eth: ethers.formatEther(finalGasPrice),
+    usd: ethUSD * parseFloat(ethers.formatEther(finalGasPrice))
+  };
+}
 
 export async function sendUSDC(senderId: string, receiverAddress: string, amountInUSD: string) {
   const senderPrivate = await getSenderPrivatefromId(senderId) || "";
