@@ -1,19 +1,17 @@
-"use client";
-import { useEffect, useState } from 'react';
 import type { Database } from 'types_db';
 import CopyableAddress from '@/components/CopyableAddress';
 
 interface AccountDataProps {
-  detail: Database['public']['Tables']['profiles']['Row'],
+  userDetail: Database['public']['Tables']['profiles']['Row'],
   email: string
 }
 
-const AccountData = ({ detail, email }: AccountDataProps) => {
-  const [userDetail, setUserDetail] = useState(detail);
+const AccountData = ({ userDetail, email }: AccountDataProps) => {
+  // const [userDetail, setUserDetail] = useState(detail);
 
-  useEffect(() => {
-    setUserDetail(detail);
-  }, [detail]);
+  // useEffect(() => {
+  //   setUserDetail(detail);
+  // }, [detail]);
 
   return (
     <div className="flex flex-col bg-white py-8 px-4 shadow sm:px-10">
