@@ -15,20 +15,20 @@ interface WithdrawProps {
 const Withdraw = ({ userDetail }: WithdrawProps) => {
 
   const [address, setAddress] = useState("");
-  const [addressError, setAddresError] = useState("");
+  const [addressError, setAddressError] = useState("");
   const [amount, setAmount] = useState("0");
   const [amountError, setAmountError] = useState("");
 
   const isValidEthereumAddress = (eth_address: string) => {
     const ethAddressRegex = /^0x[0-9a-fA-F]{40}$/;
-    return ethAddressRegex.test(eth_address);
+    return ethAddressRegex.test(eth_address) && eth_address != userDetail.eth_address;
   }
 
   const withdrawUSDC = async () => {
     let flag = false;
     if (!isValidEthereumAddress(address)) {
       flag = true;
-      setAddresError('Please put the correct value');
+      setAddressError('Please put the correct value');
     }
     if (parseFloat(amount) == 0 || amount == '' || parseFloat(amount) > (userDetail.account_usdc || 0)) {
       flag = true;
@@ -52,7 +52,7 @@ const Withdraw = ({ userDetail }: WithdrawProps) => {
 
   return (
     <StyledBox title="Withdraw">
-      <StyledInput label="Address" value={address} setValue={setAddress} placeholder="Withdrawal Address" error={addressError} setError={setAddresError} />
+      <StyledInput label="Address" value={address} setValue={setAddress} placeholder="Withdrawal Address" error={addressError} setError={setAddressError} />
       <StyledInput label="Amount" value={amount} setValue={setAmount} error={amountError} setError={setAmountError} />
       <StyledButton text="Withdraw" onClickHandler={withdrawUSDC} />
     </StyledBox>

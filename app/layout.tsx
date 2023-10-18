@@ -39,7 +39,7 @@ export const metadata = {
   }
 };
 
-export const revalidate = 0;
+// export const revalidate = 0;
 
 export default function RootLayout({
   // Layouts must accept a children prop.
@@ -49,8 +49,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <script src="https://js.stripe.com/v3/"></script>
-        <script src="https://crypto-js.stripe.com/crypto-onramp-outer.js"></script>
       </head>
       <body className="bg-black loading">
         <SupabaseProvider>

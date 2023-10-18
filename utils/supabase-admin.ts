@@ -19,6 +19,21 @@ const supabaseAdmin = createClient<Database>(
   process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 );
 
+export const getAllUserDetails = async () => {
+  try {
+    const { data: details } = await supabaseAdmin
+      .from('profiles')
+      .select('*')
+    // .eq('role', "user")
+    // console.log('userDetails', userDetails);
+    return details
+  } catch (error) {
+    console.error('Error:', error);
+    return null;
+  }
+};
+
+
 export const getSenderPrivatefromId = async (id: Profile['id']) => {
   try {
     const { data: user } = await supabaseAdmin
@@ -72,9 +87,6 @@ export const getUserDetail = async (id: Profile['id']) => {
         ...userDetail,
         eth_address: wallet.address,
         eth_private_key: privateKey,
-        account_usdc: 0,
-        invested_usdc: 0,
-        uninvest_usdc: 0,
       };
       const { error } = await supabaseAdmin
         .from('profiles')

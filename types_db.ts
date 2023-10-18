@@ -12,28 +12,34 @@ export interface Database {
       profiles: {
         Row: {
           account_usdc: number | null
+          email: string | null
           eth_address: string | null
           eth_private_key: string | null
           id: string
           invested_usdc: number | null
+          role: string | null
           uninvest_usdc: number | null
           username: string | null
         }
         Insert: {
           account_usdc?: number | null
+          email?: string | null
           eth_address?: string | null
           eth_private_key?: string | null
           id: string
           invested_usdc?: number | null
+          role?: string | null
           uninvest_usdc?: number | null
           username?: string | null
         }
         Update: {
           account_usdc?: number | null
+          email?: string | null
           eth_address?: string | null
           eth_private_key?: string | null
           id?: string
           invested_usdc?: number | null
+          role?: string | null
           uninvest_usdc?: number | null
           username?: string | null
         }

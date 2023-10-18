@@ -11,7 +11,7 @@ const provider = new ethers.JsonRpcProvider(
 const wallet = new ethers.Wallet(process.env.WALLET_PRIVATE_KEY, provider);
 
 const usdcToken = new ethers.Contract(usdcAddress, abi, provider)
-const usdcTokenWithWallet = usdcToken.connect(wallet);
+// const usdcTokenWithWallet = usdcToken.connect(wallet);
 
 export async function sendEther(receiverAddress: string, amountInEther: string) {
   // Create a transaction object

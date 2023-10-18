@@ -65,6 +65,8 @@ const Transfered = async (txHash, from, to, amount) => {
     console.log(err);
   }
 
+  console.log("Action", action);
+
   // Insert one tx into the tx table
   if(action == null)  return;
   try{
