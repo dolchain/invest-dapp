@@ -34,7 +34,7 @@ const Invest = ({ userDetail }: InvestProps) => {
     setGas("");
     if (isValidAmount()) {
       console.log(amount);
-      getEstimatedGas();
+      // getEstimatedGas();
     }
   }, [amount])
 

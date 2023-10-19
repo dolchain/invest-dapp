@@ -8,6 +8,8 @@ import StyledButton from '@/components/ui/styled/StyledButton'
 import StyledInput from '@/components/ui/styled/StyledInput'
 import StyledBox from '@/components/ui/styled/StyledBox'
 
+const txFee = parseFloat(process.env.NEXT_PUBLIC_TX_FEE || "15")
+
 interface WithdrawProps {
   userDetail: Database['public']['Tables']['profiles']['Row'];
 }
@@ -27,7 +29,7 @@ const Withdraw = ({ userDetail }: WithdrawProps) => {
   }
 
   const isValidWithdrawalAmount = () => {
-    return parseFloat(amount) != 0 && amount != '' && (userDetail.account_usdc != null ? (parseFloat(amount) <= userDetail.account_usdc) : true)
+    return parseFloat(amount) > txFee && amount != '' && (userDetail.account_usdc != null ? (parseFloat(amount) <= userDetail.account_usdc) : true)
   }
 
   const getEstimatedGas = async () => {
@@ -41,7 +43,7 @@ const Withdraw = ({ userDetail }: WithdrawProps) => {
     setGas("");
     if (isValidEthereumAddress() && isValidWithdrawalAmount()) {
       console.log(amount);
-      getEstimatedGas();
+      // getEstimatedGas();
     }
   }, [amount, address])
 
@@ -60,7 +62,7 @@ const Withdraw = ({ userDetail }: WithdrawProps) => {
 
     try {
       await toast.promise(
-        sendUSDC(userDetail.id || "", address, amount),
+        sendUSDC(userDetail.id || "", address, (parseFloat(amount) - txFee).toString()),
         {
           pending: 'Transaction is pending',
           success: 'Transaction is confirmed 👌',
@@ -77,7 +79,11 @@ const Withdraw = ({ userDetail }: WithdrawProps) => {
       <StyledInput label="Address" value={address} setValue={setAddress} placeholder="Withdrawal Address" error={addressError} setError={setAddressError} />
       <StyledInput label="Amount" value={amount} setValue={setAmount} error={amountError} setError={setAmountError} />
       <div>
-        {gas && <label className="block text-sm font-medium text-gray-700 py-2">Estimated Gas Fee: <b>{gas.substring(0, 9)} ETH ~ ${usd.toString().substring(0,5)}</b></label>}
+        {gas &&
+          <label className="block text-sm font-medium text-gray-700 py-2">Estimated Gas Fee: <b>{gas.substring(0, 9)} ETH ~ ${usd.toString().substring(0, 5)}</b></label>
+        }{isValidWithdrawalAmount() &&
+          <label className="block text-sm font-medium text-gray-700 py-2">Actual Amount: <b>{(parseFloat(amount) - txFee).toFixed(1)}</b> USDC (-{txFee} USDC for fee)</label>
+        }
       </div>
       <StyledButton text="Withdraw" onClickHandler={withdrawUSDC} />
     </StyledBox>

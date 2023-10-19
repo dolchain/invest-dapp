@@ -7,20 +7,20 @@ const usdcAddress = "0xc493e7373757C759cf589731eE1cFaB80b13Ed7a";
 
 let ethUSD = 1565.11
 
-fetch('https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD')
-  .then((response) => {
-    return response.json();
-  })
-  .then((data) => {
-    console.log(data);
-    ethUSD = data.USD;
-  })
-  .catch((error) => {
-    console.log("Fetch Error", error);
-  })
+// fetch('https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD')
+//   .then((response) => {
+//     return response.json();
+//   })
+//   .then((data) => {
+//     console.log(data);
+//     ethUSD = data.USD;
+//   })
+//   .catch((error) => {
+//     console.log("Fetch Error", error);
+//   })
 
 const provider = new ethers.JsonRpcProvider(
-  process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL
+  `https://side-dawn-shape.ethereum-sepolia.quiknode.pro/${process.env.SEPOLIA_RPC_QUICKNODE_ID}`
 );
 const wallet = new ethers.Wallet(process.env.WALLET_PRIVATE_KEY, provider);
 

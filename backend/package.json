@@ -11,7 +11,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ethersproject/address": "^5.7.0",
+    "@ethersproject/contracts": "^5.7.0",
+    "@ethersproject/providers": "^5.7.2",
+    "@ethersproject/solidity": "^5.7.0",
     "@supabase/supabase-js": "^2.38.0",
+    "@uniswap/sdk": "^3.0.3",
     "dotenv": "^16.3.1",
     "ethers": "^6.7.1",
     "express": "^4.18.2",
