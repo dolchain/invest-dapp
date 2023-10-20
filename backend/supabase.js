@@ -26,7 +26,7 @@ const Transfered = async (txHash, from, to, amount) => {
       const profileData = {
         ...userDetail,
         account_usdc: userDetail?.account_usdc + amount,
-        invested_usdc: userDetail?.invested_usdc - (action == 'deposit' ? 0 : amount),
+        invested_usdc: userDetail?.invested_usdc - (action == 'deposit' ? 0 : amount + 15),
         uninvest_usdc: action == 'deposit' ? userDetail.uninvest_usdc : 0,
       };
       const {error} = await supabaseAdmin

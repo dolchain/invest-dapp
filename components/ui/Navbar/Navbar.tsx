@@ -4,7 +4,7 @@ import { createServerSupabaseClient } from '@/app/supabase-server';
 import Logo from '@/components/icons/Logo';
 import SignOutButton from './SignOutButton';
 import ResponsiveNavbar from './ResponsiveNavbar';
-import { getUserDetail } from '@/utils/supabase-admin';
+// import { getUserDetail } from '@/utils/supabase-admin';
 
 import s from './Navbar.module.css';
 
@@ -13,7 +13,7 @@ export default async function Navbar() {
   const {
     data: { user }
   } = await supabase.auth.getUser();
-  const [userDetail] = user ? await Promise.all([getUserDetail(user.id)]) : [];
+  // const [userDetail] = user ? await Promise.all([getUserDetail(user.id)]) : [];
 
   return (
     <nav className={s.root}>
@@ -21,7 +21,9 @@ export default async function Navbar() {
         Skip to content
       </a>
       <div className="max-w-6xl px-6 mx-auto">
-        <ResponsiveNavbar user={user} role={userDetail?.role} />
+        <ResponsiveNavbar user={user}
+        // role={userDetail?.role} 
+        />
       </div>
     </nav>
   );

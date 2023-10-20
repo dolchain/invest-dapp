@@ -3,7 +3,7 @@ import { getSenderPrivatefromId } from './supabase-admin'
 const ethers = require('ethers')
 const { abi } = require('@/smart_contract/abis/usdcTestToken.json');
 const usdcAddress = "0xc493e7373757C759cf589731eE1cFaB80b13Ed7a";
-// require("dotenv").config();
+require("dotenv").config();
 
 let ethUSD = 1565.11
 
@@ -34,13 +34,16 @@ export async function sendEther(receiverAddress: string, amountInEther: string) 
     // Convert currency unit from ether to wei
     value: ethers.parseEther(amountInEther),
   }
+  console.log("SEND TX:", tx);
+  console.log(wallet);
   // Send a transaction
   await wallet.sendTransaction(tx)
     .then((txObj: any) => {
-      console.log('txHash', txObj.hash)
+      console.log('send ETH TxHash', txObj.hash)
     })
     .catch((err: Error) => {
       console.log("ERROR:", err)
+      throw err;
     })
 }
 

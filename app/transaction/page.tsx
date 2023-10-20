@@ -22,8 +22,8 @@ export default async function Account() {
   }
 
   const user = session?.user;
-  const [userDetail] = user ? await Promise.all([getUserDetail(user.id)]) : [];
-  const [transactions] = user ? await Promise.all([getTransactions(userDetail?.eth_address || null)]) : [];
+  // const [userDetail] = user ? await Promise.all([getUserDetail(user.id)]) : [];
+  // const [transactions] = user ? await Promise.all([getTransactions(userDetail?.eth_address || null)]) : [];
 
   const actionColors: Record<string, string> = {
     'deposit': "text-green-500",
@@ -34,13 +34,12 @@ export default async function Account() {
 
   return (
     <section className="mb-32 bg-black">
-      <div className="max-w-6xl px-4 py-8 mx-auto sm:px-6 sm:pt-24 lg:px-8">
+      {/* <div className="max-w-6xl px-4 py-8 mx-auto sm:px-6 sm:pt-24 lg:px-8">
         <div className="sm:align-center sm:flex sm:flex-col">
           <h1 className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
             History
           </h1>
           <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
-            {/* We partnered with Stripe for a simplified billing. */}
           </p>
         </div>
       </div>
@@ -53,7 +52,6 @@ export default async function Account() {
               <th className="px-4 py-2 text-left">Receiver</th>
               <th className="px-4 py-2 text-left">Action</th>
               <th className="px-4 py-2 text-left">Amount</th>
-              {/* <th className="px-4 py-2 text-left">Age</th> */}
               <th className="px-4 py-2 text-left">Timestamp</th>
             </tr>
           </thead>
@@ -72,12 +70,11 @@ export default async function Account() {
                   {transaction.action}</td>
                 <td className="border px-4 py-2 text-white-400">{transaction.amount}</td>
                 <td className="border px-4 py-2 text-white-400">{transaction.timestamp}</td>
-                {/* <td className="border px-4 py-2 text-white-400">{transaction.timestamp}</td> */}
               </tr>
             ))}
           </tbody>
         </table>
-      </div>
+      </div> */}
 
     </section >
   );
