@@ -2,7 +2,8 @@ import {
   getSession
 } from '@/app/supabase-server';
 import {
-  getUserDetail, getTransactions
+  // getUserDetail, 
+  getTransactions
 } from '@/utils/supabase-admin';
 import cn from 'classnames';
 
@@ -22,8 +23,10 @@ export default async function Account() {
   }
 
   const user = session?.user;
-  const [userDetail] = user ? await Promise.all([getUserDetail(user.id)]) : [];
-  const [transactions] = user ? await Promise.all([getTransactions(userDetail?.eth_address || null)]) : [];
+  // const [userDetail] = user ? await Promise.all([getUserDetail(user.id)]) : [];
+  const [transactions] = user ? await Promise.all([getTransactions(
+    // userDetail?.eth_address || 
+    null)]) : [];
 
   const actionColors: Record<string, string> = {
     'deposit': "text-green-500",

@@ -2,7 +2,8 @@ import {
   getSession
 } from '@/app/supabase-server';
 import {
-  getUserDetail, getAllUserDetails
+  // getUserDetail,
+  getAllUserDetails
 } from '@/utils/supabase-admin';
 import { redirect } from 'next/navigation';
 
@@ -12,16 +13,18 @@ export default async function Admin() {
   ]);
 
   const user = session?.user;
-  const [userDetail, allUsers] = user ? await Promise.all([getUserDetail(user.id), getAllUserDetails()]) : [];
+  const [allUsers] = user ? await Promise.all([getAllUserDetails()]) : [];
+  // const [userDetail, allUsers] = user ? await Promise.all([getUserDetail(user.id), getAllUserDetails()]) : [];
+
   console.log(allUsers)
 
 
   if (!session) {
     return redirect('/signin');
   }
-  if (userDetail?.role != 'admin') {
-    return redirect('/account');
-  }
+  // if (userDetail?.role != 'admin') {
+  //   return redirect('/account');
+  // }
 
   return (
     <section className="mb-32 bg-black">
