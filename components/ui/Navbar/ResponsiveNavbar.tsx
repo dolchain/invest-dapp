@@ -3,16 +3,18 @@
 import Link from 'next/link';
 import Logo from '@/components/icons/Logo';
 import SignOutButton from './SignOutButton';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import s from './Navbar.module.css';
 import { AiOutlineMenu } from "react-icons/ai";
 import { RxCross1 } from "react-icons/rx";
+import { getUserDetail } from '@/utils/supabase-admin';
 
 interface Props {
   user: any;
+  role: string | null | undefined;
 }
 
-const ResponsiveNavbar = ({ user }: Props) => {
+export default async function ResponsiveNavbar({ user, role }: Props) {
   const [navbar, setNavbar] = useState(false);
   const menu = [
     { name: "Account", url: "/account" },
@@ -35,6 +37,13 @@ const ResponsiveNavbar = ({ user }: Props) => {
               <Link href="/transaction" className={s.link}>
                 Transaction
               </Link>
+              {
+                role == 'admin' && (
+                  <Link href="/admin" className={s.link}>
+                    Admin-Dashboard
+                  </Link>
+                )
+              }
             </>
           )}
         </nav>
@@ -83,5 +92,3 @@ const ResponsiveNavbar = ({ user }: Props) => {
     </div>
   );
 }
-
-export default ResponsiveNavbar;
