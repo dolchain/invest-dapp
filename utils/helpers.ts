@@ -22,5 +22,5 @@ export const reduceAddress = (str: string): string => {
   return str.substring(0, 12).concat("...").concat(str.slice(-6));
 }
 export const reduceHash = (str: string): string => {
-  return str.substring(0, 16).concat("...").concat(str.slice(-8));
+  return str.substring(0, 16).concat("...");
 }

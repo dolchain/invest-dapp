@@ -9,7 +9,7 @@ interface AddressProps {
   address: string;
 }
 
-export default async function Address({ address }: AddressProps) {
+export default function Address({ address }: AddressProps) {
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(address);

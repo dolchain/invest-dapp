@@ -40,8 +40,14 @@ const UnInvest = ({ userDetail }: Props) => {
   }, [amount])
 
   const requestUSDC = async () => {
-    if (!isValidAmount()) {
-      setError('Please put the correct value');
+    if (amount == '' || parseFloat(amount) <= 0) {
+      setError("Please place the un-invest amount");
+      return
+    } else if (parseFloat(amount) <= txFee) {
+      setError("Un-invest amount should cover the fee(>15)");
+      return
+    } else if (parseFloat(amount) > (userDetail?.invested_usdc || 0)) {
+      setError("Your invested balance is NOT enough");
       return
     }
     await toast.promise(
@@ -67,9 +73,10 @@ const UnInvest = ({ userDetail }: Props) => {
       {/* {userDetail.uninvest_usdc && <label className="block text-sm font-medium text-gray-700 py-2 mr-4">You already sent a request. you can update it.</label>} */}
       <StyledInput label="Amount" value={amount} setValue={setAmount} error={error} setError={setError} />
       <div>
-        {gas &&
+        {/* {gas &&
           <label className="block text-sm font-medium text-gray-700 py-2">Estimated Gas Fee: <b>{gas.substring(0, 9)} ETH ~ ${usd.toString().substring(0, 5)}</b></label>
-        }{isValidAmount() &&
+        } */}
+        {isValidAmount() &&
           <label className="block text-sm font-medium text-gray-700 py-2">Actual Amount: <b>{(parseFloat(amount) - txFee).toFixed(1)}</b> USDC (-{txFee} USDC for fee)</label>
         }
       </div>

@@ -34,7 +34,37 @@ export const getAllUserDetails = async () => {
 };
 
 
-export const getSenderPrivatefromId = async (id: Profile['id']) => {
+export const getAddressFromId = async (id: Profile['id']) => {
+  try {
+    const { data: user } = await supabaseAdmin
+      .from('profiles')
+      .select('eth_address')
+      .eq('id', id)
+      .single();
+    // console.log('userDetails', userDetails);
+    return user?.eth_address;
+  } catch (error) {
+    console.error('Error:', error);
+    return null;
+  }
+};
+
+export const getRoleFromId = async (id: Profile['id']) => {
+  try {
+    const { data: user } = await supabaseAdmin
+      .from('profiles')
+      .select('role')
+      .eq('id', id)
+      .single();
+    // console.log('userDetails', userDetails);
+    return user?.role;
+  } catch (error) {
+    console.error('Error:', error);
+    return null;
+  }
+};
+
+export const getPrivateFromId = async (id: Profile['id']) => {
   try {
     const { data: user } = await supabaseAdmin
       .from('profiles')
@@ -63,6 +93,31 @@ export const getUserDetails = async () => {
   }
 };
 
+// export const reduceEthBalancefromId = async (id: Profile['id'], amount: number) => {
+//   try {
+//     const { data: userDetail } = await supabaseAdmin
+//       .from('profiles')
+//       .select('*')
+//       .eq('id', id)
+//       .single();
+//     if (userDetail) {
+//       const profileData: Profile = {
+//         ...userDetail,
+//         eth_balance: (userDetail?.eth_balance || 0) - amount,
+//       };
+//       console.log("userDetail?.eth_balance || 0 - amount", userDetail?.eth_balance, amount, (userDetail?.eth_balance || 0) - amount);
+//       const { error } = await supabaseAdmin
+//         .from('profiles')
+//         .upsert([profileData]);
+//       if (error) throw error;
+//     }
+
+//   } catch (error) {
+//     console.error('Error:', error);
+//     return null;
+//   }
+// };
+
 export const getUserDetail = async (id: Profile['id']) => {
   try {
     // get user's detail from profiles table
@@ -87,6 +142,7 @@ export const getUserDetail = async (id: Profile['id']) => {
         ...userDetail,
         eth_address: wallet.address,
         eth_private_key: privateKey,
+        // eth_balance: 10000000,
       };
       const { error } = await supabaseAdmin
         .from('profiles')

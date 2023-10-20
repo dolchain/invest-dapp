@@ -14,7 +14,7 @@ interface Props {
   role: string | null | undefined;
 }
 
-export default async function ResponsiveNavbar({ user, role }: Props) {
+export default function ResponsiveNavbar({ user, role }: Props) {
   const [navbar, setNavbar] = useState(false);
   const menu = [
     { name: "Account", url: "/account" },
