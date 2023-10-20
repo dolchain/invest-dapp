@@ -40,6 +40,7 @@ export const metadata = {
 };
 
 // export const revalidate = 0;
+export const dynamic = 'force-dynamic'
 
 export default function RootLayout({
   // Layouts must accept a children prop.

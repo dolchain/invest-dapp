@@ -30,17 +30,13 @@ const Invest = ({ userDetail }: InvestProps) => {
     setUSD(estimatedGas.usd);
   }
 
-  useEffect(() => {
-    setGas("");
-    if (isValidAmount()) {
-      console.log(amount);
-      // getEstimatedGas();
-    }
-  }, [amount])
 
   const investUSDC = async () => {
-    if (!isValidAmount()) {
-      setError('Please put the correct value');
+    if (amount == '' || parseFloat(amount) <= 0) {
+      setError("Please place the invest amount");
+      return
+    } else if (parseFloat(amount) > (userDetail?.account_usdc || 0)) {
+      setError("Your account wallet balance is NOT enough");
       return
     }
     try {
@@ -61,7 +57,7 @@ const Invest = ({ userDetail }: InvestProps) => {
     <StyledBox title="Invest">
       <StyledInput label="Amount" value={amount} setValue={setAmount} error={error} setError={setError} />
       <div>
-        {gas && <label className="block text-sm font-medium text-gray-700 py-2">Estimated Gas Fee: <b>{gas.substring(0, 9)} ETH ~ ${usd.toString().substring(0, 5)}</b></label>}
+        {/* {gas && <label className="block text-sm font-medium text-gray-700 py-2">Estimated Gas Fee: <b>{gas.substring(0, 9)} ETH ~ ${usd.toString().substring(0, 5)}</b></label>} */}
       </div>
       <StyledButton text="Invest" onClickHandler={investUSDC} />
     </StyledBox>

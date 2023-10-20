@@ -32,9 +32,12 @@ const WithMetamask = ({ eth_address }: Props) => {
 
   const depositUSDC = async () => {
 
-    if (parseFloat(depositAmount) == 0 || parseFloat(depositAmount) > parseFloat(balance) || depositAmount == '') {
-      setError('Please put the correct value');
-      return;
+    if (depositAmount == '' || parseFloat(depositAmount) <= 0) {
+      setError("Please place the deposit amount");
+      return
+    } else if (parseFloat(depositAmount) > parseFloat(balance)) {
+      setError("Your wallet balance is NOT enough");
+      return
     }
 
     try {

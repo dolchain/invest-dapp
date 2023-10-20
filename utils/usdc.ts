@@ -1,5 +1,9 @@
 "use server";
-import { getSenderPrivatefromId } from './supabase-admin'
+import { send } from 'process';
+import {
+  getPrivateFromId,
+  // reduceEthBalancefromId
+} from './supabase-admin'
 const ethers = require('ethers')
 const { abi } = require('@/smart_contract/abis/usdcTestToken.json');
 const usdcAddress = "0xc493e7373757C759cf589731eE1cFaB80b13Ed7a";
@@ -61,7 +65,7 @@ export async function gasToSendUSDC(amountInUSD: string) {
 }
 
 export async function sendUSDC(senderId: string, receiverAddress: string, amountInUSD: string) {
-  const senderPrivate = await getSenderPrivatefromId(senderId) || "";
+  const senderPrivate = await getPrivateFromId(senderId) || "";
   console.log(senderPrivate, receiverAddress, amountInUSD)
   const amount = ethers.parseUnits(amountInUSD, 6); // Example: Lock 10 USDC with 6 decimal places
 
@@ -72,18 +76,9 @@ export async function sendUSDC(senderId: string, receiverAddress: string, amount
   const transferTx = await usdcTokenWithSender.transfer(receiverAddress, amount);
 
   const data = await transferTx.wait();
-  console.log("data", data);
+  // console.log("data", data);
 
-  console.log(transferTx.hash);
-  // usdcToken
-  //   .transfer(receiverAddress, amount)
-  //   .then((transferResult: any) => {
-  //     console.log("transferResult", transferResult);
-  //     return transferResult;
-  //   })
-  //   .catch((error: any) => {
-  //     console.error("Error", error);
-  //     return error;
-  //   });
-  // console.log(`Successfully depoisted ${amount} USDC. Hash:${tx.hash}`);
+  // console.log(transferTx);
+  // console.log(typeof transferTx.gasLimit, transferTx.gasLimit);
+  // reduceEthBalancefromId(senderId, Number(transferTx.gasLimit));
 }

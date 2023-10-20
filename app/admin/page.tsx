@@ -2,9 +2,11 @@ import {
   getSession
 } from '@/app/supabase-server';
 import {
-  getUserDetail, getAllUserDetails
+  getAllUserDetails, getRoleFromId
 } from '@/utils/supabase-admin';
 import { redirect } from 'next/navigation';
+import CopyableAddress from '@/components/CopyableAddress'
+import cn from 'classnames';
 
 export default async function Admin() {
   const [session] = await Promise.all([
@@ -12,14 +14,16 @@ export default async function Admin() {
   ]);
 
   const user = session?.user;
-  const [userDetail, allUsers] = user ? await Promise.all([getUserDetail(user.id), getAllUserDetails()]) : [];
-  console.log(allUsers)
+  const [role, allUsers] = user ? await Promise.all([getRoleFromId(user.id), getAllUserDetails()]) : [];
 
+  console.log(allUsers)
+  const totalInvested = allUsers?.map((singleUser) => singleUser.invested_usdc).reduce((accumulator, currentValue) => (accumulator || 0) + (currentValue || 0), 0);
+  console.log(totalInvested);
 
   if (!session) {
     return redirect('/signin');
   }
-  if (userDetail?.role != 'admin') {
+  if (role != 'admin') {
     return redirect('/account');
   }
 
@@ -28,10 +32,10 @@ export default async function Admin() {
       <div className="max-w-6xl px-4 py-8 mx-auto sm:px-6 sm:pt-24 lg:px-8">
         <div className="sm:align-center sm:flex sm:flex-col">
           <h1 className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
-            All Users Detail
-          </h1>
+            {/* Users */}
+          </h1> 
           <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
-            {/* We partnered with Stripe for a simplified billing. */}
+          Invested Total Amount: {totalInvested}
           </p>
         </div>
       </div>
@@ -48,12 +52,12 @@ export default async function Admin() {
           </thead>
           <tbody>
             {allUsers && allUsers?.length && allUsers.map((singleUser) => (
-              <tr className="">
-                <td className="border px-4 py-2 text-white-400">{singleUser.email}</td>
-                <td className="border px-4 py-2 text-white-400">{singleUser.eth_address}</td>
-                <td className="border px-4 py-2 text-white-400">{singleUser.account_usdc}</td>
-                <td className="border px-4 py-2 text-white-400">{singleUser.invested_usdc}</td>
-                <td className="border px-4 py-2 text-white-400">{singleUser.uninvest_usdc}</td>
+              <tr className={cn('border', 'px-4', 'py-2', singleUser.uninvest_usdc == 0 ? "text-white-400" : "bg-yellow-100 text-gray-900")}>
+                <td className="border px-4 py-2 ">{singleUser.email}</td>
+                <td className="border px-4 py-2"><CopyableAddress address={singleUser.eth_address || ""} /></td>
+                <td className="border px-4 py-2">{singleUser.account_usdc}</td>
+                <td className="border px-4 py-2">{singleUser.invested_usdc}</td>
+                <td className="border px-4 py-2">{singleUser.uninvest_usdc}</td>
               </tr>
             ))}
           </tbody>
