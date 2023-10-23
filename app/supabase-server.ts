@@ -52,7 +52,6 @@ export async function getUserDetails() {
         .update(newUserDetail)
         .eq('id', userDetail.id)
       if (error) throw error;
-      console.log(`newUserDetail updated: ${newUserDetail.id}`);
 
       return newUserDetail;
     }
@@ -111,19 +110,15 @@ export const _sendUninvestRequest = async (amount: User['uninvest_usdc']) => {
       .from('users')
       .select('*')
       .single();
-    console.log("old", userDetail);
     if (userDetail?.id) {
       const newUserDetail: User = {
         ...userDetail,
         uninvest_usdc: amount!,
       };
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('users')
         .update(newUserDetail)
         .eq('id', userDetail.id)
-        .select();
-      console.log("new", data);
-      console.log("Error", error);
       return newUserDetail;
     }
   } catch (error) {

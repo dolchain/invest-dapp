@@ -41,10 +41,8 @@ const WithMetamask = ({ eth_address }: Props) => {
     }
 
     try {
-      // console.log("Poping up the metamask to confirm the gas fee");
       const amount = ethers.parseUnits(depositAmount, 6);
       const depositTxn = await usdcToken?.transfer(eth_address, amount);
-      // console.log("Depositing...please wait.");
       await toast.promise(
         depositTxn.wait(),
         {
@@ -53,18 +51,15 @@ const WithMetamask = ({ eth_address }: Props) => {
           error: 'Transaction rejected 🤯'
         }
       );
-      console.log(`Deposit function called successfully.\nYou can check on https://sepolia.etherscan.io/tx/${depositTxn.hash}`);
       updateBlance();
     } catch (error) {
       toast.error("Transaction rrejected 🤯")
-      // console.log("Error");
-      // console.log(error);
+      console.log("Error", error);
     }
   };
 
   const updateBlance = async () => {
     const usdcBalance = await usdcToken?.balanceOf(address!);
-    console.log(`${address} USDC Balance: ${ethers.formatUnits(usdcBalance!, 6)}`); // USDC has 6 decimal places
     setBalance(ethers.formatUnits(usdcBalance!, 6));
   };
 
@@ -85,13 +80,11 @@ const WithMetamask = ({ eth_address }: Props) => {
   };
 
   useEffect(() => {
-    console.log(address);
     if (address)
       updateContract();
   }, [address]);
 
   useEffect(() => {
-    console.log(usdcToken);
     if (usdcToken)
       updateBlance();
   }, [usdcToken]);

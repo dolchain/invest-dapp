@@ -23,14 +23,9 @@ export const revalidate = 0
 export default async function Account() {
   // IMPORTANT: replace with your logic of how to mint/retrieve client secret
   // const clientSecret = "cos_1NvOGwAo4s8oHTt3u3rz3na6_secret_EbBDNAcASzNzlEcXRWUS31WCU00rrGoRtfi";
-  // const [session, userDetail] = await Promise.all([
-  //   getSession(), getUserDetails()
-  // ]);
   const session = await getSession();
-  const { data: userDetail } = await supabase
-    .from('users')
-    .select('*')
-    .single();
+  const userDetail = await getUserDetails();
+  // const { data: userDetail } = await supabase.from('users').select('*').single();
 
   const user = session?.user;
   // const [userDetail] = user ? await Promise.all([getUserDetail(user.id)]) : [];

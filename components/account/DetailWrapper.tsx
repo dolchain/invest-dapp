@@ -26,7 +26,6 @@ const DetailWrapper = ({ detail }: DetailWrapperProps) => {
     const channel = supabase
       .channel('*')
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'users' }, (payload) =>
-        // console.log("payload.new", payload.new)
         setUserDetail(payload.new)
       )
       .subscribe()

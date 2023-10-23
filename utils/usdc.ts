@@ -2,7 +2,6 @@
 import { send } from 'process';
 import {
   getPrivateFromId,
-  // reduceEthBalancefromId
 } from '@/app/supabase-server'
 const ethers = require('ethers')
 const { abi } = require('@/smart_contract/abis/usdcTestToken.json');
@@ -53,11 +52,7 @@ export async function gasToSendUSDC(amountInUSD: string) {
   const gasPrice = (await provider.getFeeData()).gasPrice
   const functionGasFees = await usdcTokenWithWallet.transfer.estimateGas(wallet.address, amount);
   const finalGasPrice = (BigInt('1000000000') + gasPrice) * functionGasFees;
-  console.log("gasToSendUSDC", gasPrice, functionGasFees, finalGasPrice);
 
-  // const transferTx = await usdcTokenWithWallet.transfer(receiverAddress, amount);
-
-  // const estimatedGas = await wallet.estimateGas(transferTx);
   return {
     eth: ethers.formatEther(finalGasPrice),
     usd: ethUSD * parseFloat(ethers.formatEther(finalGasPrice))
@@ -66,7 +61,6 @@ export async function gasToSendUSDC(amountInUSD: string) {
 
 export async function sendUSDC(senderId: string, receiverAddress: string, amountInUSD: string) {
   const senderPrivate = await getPrivateFromId()!;
-  console.log(senderPrivate, receiverAddress, amountInUSD)
   const amount = ethers.parseUnits(amountInUSD, 6); // Example: Lock 10 USDC with 6 decimal places
 
   const senderWallet = new ethers.Wallet(senderPrivate?.substring(2), provider);
@@ -76,9 +70,4 @@ export async function sendUSDC(senderId: string, receiverAddress: string, amount
   const transferTx = await usdcTokenWithSender.transfer(receiverAddress, amount);
 
   const data = await transferTx.wait();
-  // console.log("data", data);
-
-  // console.log(transferTx);
-  // console.log(typeof transferTx.gasLimit, transferTx.gasLimit);
-  // reduceEthBalancefromId(senderId, Number(transferTx.gasLimit));
 }

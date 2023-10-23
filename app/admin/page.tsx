@@ -25,10 +25,7 @@ export default async function Admin() {
   const user = session?.user;
   const [allUsers] = user ? await Promise.all([getAllUserDetails()]) : [];
 
-  console.log(allUsers)
   const totalInvested = allUsers?.map((singleUser) => singleUser.invested_usdc).reduce((accumulator, currentValue) => (accumulator!) + (currentValue!), 0);
-  console.log(totalInvested);
-
 
   return (
     <section className="mb-32 bg-black">

@@ -21,8 +21,6 @@ const Withdraw = ({ userDetail }: WithdrawProps) => {
   const [amount, setAmount] = useState("0");
   const [amountError, setAmountError] = useState("");
   const [actualAmount, setActualAmount] = useState(0);
-  // const [gas, setGas] = useState("");
-  // const [usd, setUSD] = useState(0);
 
   const isValidEthereumAddress = () => {
     const ethAddressRegex = /^0x[0-9a-fA-F]{40}$/;
@@ -33,18 +31,9 @@ const Withdraw = ({ userDetail }: WithdrawProps) => {
     return parseFloat(amount) > txFee && amount != '' && (userDetail.account_usdc != null ? (parseFloat(amount) <= userDetail.account_usdc) : true)
   }
 
-  // const getEstimatedGas = async () => {
-  //   const estimatedGas = await gasToSendUSDC(amount);
-  //   console.log(typeof estimatedGas);
-  //   setGas(estimatedGas.eth);
-  //   setUSD(estimatedGas.usd);
-  // }
-
   useEffect(() => {
-    // setGas("");
     if (isValidEthereumAddress() && isValidWithdrawalAmount()) {
       setActualAmount(parseFloat(amount) - txFee);
-      // getEstimatedGas();
     } else {
       setActualAmount(0)
     }

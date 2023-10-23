@@ -71,7 +71,6 @@ export default function ResponsiveNavbar({ user, role }: Props) {
               <button
                 className="p-2 text-gray-700 rounded-md outline-none focus:border-gray-400 focus:border"
                 onClick={() => {
-                  console.log("nav", navbar);
                   setNavbar(!navbar)
                 }}
               >
