@@ -11,7 +11,7 @@ import StyledBox from '@/components/ui/styled/StyledBox'
 const txFee = parseFloat(process.env.NEXT_PUBLIC_TX_FEE || "15")
 
 interface Props {
-  userDetail: Database['public']['Tables']['profiles']['Row'];
+  userDetail: Database['public']['Tables']['users']['Row'];
 }
 
 const UnInvest = ({ userDetail }: Props) => {
@@ -51,7 +51,7 @@ const UnInvest = ({ userDetail }: Props) => {
       return
     }
     await toast.promise(
-      sendUninvestRequest(userDetail, parseFloat(amount) - txFee),
+      sendUninvestRequest(parseFloat(amount) - txFee),
       {
         pending: 'Submiting request',
         success: 'Submited successfully 👌',

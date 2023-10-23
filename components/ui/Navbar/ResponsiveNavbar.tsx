@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react';
 import s from './Navbar.module.css';
 import { AiOutlineMenu } from "react-icons/ai";
 import { RxCross1 } from "react-icons/rx";
-import { getUserDetail } from '@/utils/supabase-admin';
 
 interface Props {
   user: any;

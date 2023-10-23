@@ -11,7 +11,7 @@ import StyledBox from '@/components/ui/styled/StyledBox'
 const txFee = parseFloat(process.env.NEXT_PUBLIC_TX_FEE || "15")
 
 interface WithdrawProps {
-  userDetail: Database['public']['Tables']['profiles']['Row'];
+  userDetail: Database['public']['Tables']['users']['Row'];
 }
 
 const Withdraw = ({ userDetail }: WithdrawProps) => {
