@@ -65,11 +65,11 @@ export async function gasToSendUSDC(amountInUSD: string) {
 }
 
 export async function sendUSDC(senderId: string, receiverAddress: string, amountInUSD: string) {
-  const senderPrivate = await getPrivateFromId() || "";
+  const senderPrivate = await getPrivateFromId()!;
   console.log(senderPrivate, receiverAddress, amountInUSD)
   const amount = ethers.parseUnits(amountInUSD, 6); // Example: Lock 10 USDC with 6 decimal places
 
-  const senderWallet = new ethers.Wallet(senderPrivate.substring(2), provider);
+  const senderWallet = new ethers.Wallet(senderPrivate?.substring(2), provider);
   // Load the USDC token contract
   const usdcTokenWithSender = usdcToken.connect(senderWallet);
 

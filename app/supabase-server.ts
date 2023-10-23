@@ -10,8 +10,8 @@ export const createServerSupabaseClient = cache(() =>
   createServerComponentClient<Database>({ cookies })
 );
 const supabase = createServerSupabaseClient();
-type User = Database['public']['Tables']['users']['Row'];
 
+type User = Database['public']['Tables']['users']['Row'];
 
 export async function getSession() {
   try {
@@ -111,16 +111,19 @@ export const _sendUninvestRequest = async (amount: User['uninvest_usdc']) => {
       .from('users')
       .select('*')
       .single();
+    console.log("old", userDetail);
     if (userDetail?.id) {
       const newUserDetail: User = {
         ...userDetail,
-        uninvest_usdc: amount || 0,
+        uninvest_usdc: amount!,
       };
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('users')
         .update(newUserDetail)
-        .eq('id', userDetail.id);
-      if (error) throw error;
+        .eq('id', userDetail.id)
+        .select();
+      console.log("new", data);
+      console.log("Error", error);
       return newUserDetail;
     }
   } catch (error) {
@@ -128,3 +131,5 @@ export const _sendUninvestRequest = async (amount: User['uninvest_usdc']) => {
     return null;
   }
 };
+
+export default supabase;

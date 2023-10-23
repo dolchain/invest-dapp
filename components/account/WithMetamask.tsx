@@ -63,9 +63,9 @@ const WithMetamask = ({ eth_address }: Props) => {
   };
 
   const updateBlance = async () => {
-    const usdcBalance = await usdcToken?.balanceOf(address || "");
-    console.log(`${address} USDC Balance: ${ethers.formatUnits(usdcBalance || 0, 6)}`); // USDC has 6 decimal places
-    setBalance(ethers.formatUnits(usdcBalance || 0, 6));
+    const usdcBalance = await usdcToken?.balanceOf(address!);
+    console.log(`${address} USDC Balance: ${ethers.formatUnits(usdcBalance!, 6)}`); // USDC has 6 decimal places
+    setBalance(ethers.formatUnits(usdcBalance!, 6));
   };
 
   const updateContract = async () => {

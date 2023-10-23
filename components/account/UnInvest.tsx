@@ -15,7 +15,7 @@ interface Props {
 }
 
 const UnInvest = ({ userDetail }: Props) => {
-  const [amount, setAmount] = useState(String((userDetail.uninvest_usdc || 0) + txFee));
+  const [amount, setAmount] = useState(String((userDetail.uninvest_usdc!) + txFee));
   const [error, setError] = useState("");
   const [gas, setGas] = useState("");
   const [usd, setUSD] = useState(0);
@@ -46,7 +46,7 @@ const UnInvest = ({ userDetail }: Props) => {
     } else if (parseFloat(amount) <= txFee) {
       setError("Un-invest amount should cover the fee(>15)");
       return
-    } else if (parseFloat(amount) > (userDetail?.invested_usdc || 0)) {
+    } else if (parseFloat(amount) > (userDetail?.invested_usdc!)) {
       setError("Your invested balance is NOT enough");
       return
     }

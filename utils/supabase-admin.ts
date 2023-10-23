@@ -42,7 +42,7 @@ export const sendUninvestRequest = async (amount: Profile['uninvest_usdc']) => {
   //   if (userDetail?.id) {
   //     const newUserDetail: User = {
   //       ...userDetail,
-  //       uninvest_usdc: amount || 0,
+  //       uninvest_usdc: amount !,
   //     };
   //     const { error } = await supabaseAdmin
   //       .from('profiles')
@@ -70,7 +70,7 @@ export const getTransactions = async (receiver: Transaction['to']) => {
       .from('transactions')
       .select('*')
       .eq('from', receiver);
-    return [...depositTxs || [], ...withdrawTxs || []].sort((A, B) => new Date(A.timestamp || 0).getTime() - new Date(B.timestamp || 0).getTime());
+    return [...depositTxs || [], ...withdrawTxs || []].sort((A, B) => new Date(A.timestamp!).getTime() - new Date(B.timestamp!).getTime());
   } catch (error) {
     console.error('Error:', error);
     return null;

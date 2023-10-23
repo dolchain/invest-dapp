@@ -62,14 +62,14 @@ const Withdraw = ({ userDetail }: WithdrawProps) => {
     } else if (parseFloat(amount) <= txFee) {
       setAmountError("Withdrawal amount should cover the fee(>15)");
       return
-    } else if (parseFloat(amount) > (userDetail?.account_usdc || 0)) {
+    } else if (parseFloat(amount) > (userDetail?.account_usdc!)) {
       setAmountError("Your account wallet balance is NOT enough");
       return
     }
 
     try {
       await toast.promise(
-        sendUSDC(userDetail.id || "", address, (parseFloat(amount) - txFee).toString()),
+        sendUSDC(userDetail.id!, address, (parseFloat(amount) - txFee).toString()),
         {
           pending: 'Transaction is pending',
           success: 'Transaction is confirmed 👌',

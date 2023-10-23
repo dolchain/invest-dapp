@@ -7,6 +7,7 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 );
 
+
 const Transfered = async (txHash, from, to, amount) => {
   if (from == null || to == null || amount == null) return;
 
@@ -23,15 +24,15 @@ const Transfered = async (txHash, from, to, amount) => {
       action = 'deposit'
       if(from == process.env.CENTRAL_WALLET_ADDRESS)
         action = 'uninvest'
-      const profileData = {
+      const newUserDetail = {
         ...userDetail,
         account_usdc: userDetail?.account_usdc + amount,
-        invested_usdc: userDetail?.invested_usdc - (action == 'deposit' ? 0 : amount),
+        invested_usdc: userDetail?.invested_usdc - (action == 'deposit' ? 0 : amount + 15),
         uninvest_usdc: action == 'deposit' ? userDetail.uninvest_usdc : 0,
       };
       const {error} = await supabaseAdmin
         .from('users')
-        .upsert([profileData]);
+        .upsert([newUserDetail]);
       if (error) throw error;
     }
   }catch(err){
