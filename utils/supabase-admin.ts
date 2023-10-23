@@ -8,7 +8,9 @@ import { Wallet } from 'ethers';
 import Stripe from 'stripe';
 import type { Database } from 'types_db';
 import { sendEther } from './usdc';
+import { _sendUninvestRequest } from '@/app/supabase-server'
 
+type User = Database['public']['Tables']['users']['Row'];
 type Profile = Database['public']['Tables']['profiles']['Row'];
 type Transaction = Database['public']['Tables']['transactions']['Row'];
 
@@ -22,7 +24,7 @@ const supabaseAdmin = createClient<Database>(
 export const getAllUserDetails = async () => {
   try {
     const { data: details } = await supabaseAdmin
-      .from('profiles')
+      .from('users')
       .select('*')
     // .eq('role', "user")
     // console.log('userDetails', userDetails);
@@ -33,151 +35,26 @@ export const getAllUserDetails = async () => {
   }
 };
 
-
-export const getAddressFromId = async (id: Profile['id']) => {
-  try {
-    const { data: user } = await supabaseAdmin
-      .from('profiles')
-      .select('eth_address')
-      .eq('id', id)
-      .single();
-    // console.log('userDetails', userDetails);
-    return user?.eth_address;
-  } catch (error) {
-    console.error('Error:', error);
-    return null;
-  }
-};
-
-export const getRoleFromId = async (id: Profile['id']) => {
-  try {
-    const { data: user } = await supabaseAdmin
-      .from('profiles')
-      .select('role')
-      .eq('id', id)
-      .single();
-    // console.log('userDetails', userDetails);
-    return user?.role;
-  } catch (error) {
-    console.error('Error:', error);
-    return null;
-  }
-};
-
-export const getPrivateFromId = async (id: Profile['id']) => {
-  try {
-    const { data: user } = await supabaseAdmin
-      .from('profiles')
-      .select('eth_private_key')
-      .eq('id', id)
-      .single();
-    // console.log('userDetails', userDetails);
-    return user?.eth_private_key;
-  } catch (error) {
-    console.error('Error:', error);
-    return null;
-  }
-};
-
-export const getUserDetails = async () => {
-  try {
-    const { data: userDetails } = await supabaseAdmin
-      .from('profiles')
-      .select('*')
-      .single();
-    // console.log('userDetails', userDetails);
-    return userDetails;
-  } catch (error) {
-    console.error('Error:', error);
-    return null;
-  }
-};
-
-// export const reduceEthBalancefromId = async (id: Profile['id'], amount: number) => {
-//   try {
-//     const { data: userDetail } = await supabaseAdmin
-//       .from('profiles')
-//       .select('*')
-//       .eq('id', id)
-//       .single();
-//     if (userDetail) {
-//       const profileData: Profile = {
-//         ...userDetail,
-//         eth_balance: (userDetail?.eth_balance || 0) - amount,
-//       };
-//       console.log("userDetail?.eth_balance || 0 - amount", userDetail?.eth_balance, amount, (userDetail?.eth_balance || 0) - amount);
-//       const { error } = await supabaseAdmin
-//         .from('profiles')
-//         .upsert([profileData]);
-//       if (error) throw error;
-//     }
-
-//   } catch (error) {
-//     console.error('Error:', error);
-//     return null;
-//   }
-// };
-
-export const getUserDetail = async (id: Profile['id']) => {
-  try {
-    // get user's detail from profiles table
-    const { data: userDetail } = await supabaseAdmin
-      .from('profiles')
-      .select('*')
-      .eq('id', id)
-      .single();
-    // console.log('userDetail', userDetail);
-
-    // if there is no eth address on record, generate it and save
-    if (userDetail?.eth_address === null) {
-      var id = crypto.randomBytes(32).toString('hex');
-      var privateKey = '0x' + id;
-      console.log('SAVE BUT DO NOT SHARE THIS:', privateKey);
-
-      var wallet = new Wallet(privateKey);
-      console.log('Address: ' + wallet.address);
-      sendEther(wallet.address, '0.01');
-
-      const profileData: Profile = {
-        ...userDetail,
-        eth_address: wallet.address,
-        eth_private_key: privateKey,
-        // eth_balance: 10000000,
-      };
-      const { error } = await supabaseAdmin
-        .from('profiles')
-        .upsert([profileData]);
-      if (error) throw error;
-      console.log(`ProfileData updated: ${profileData.id}`);
-
-      return profileData;
-    }
-    return userDetail;
-  } catch (error) {
-    console.error('Error:', error);
-    return null;
-  }
-};
-
-
-export const sendUninvestRequest = async (userDetail: Profile, amount: Profile['uninvest_usdc']) => {
-  console.log(userDetail?.id, amount);
-  try {
-    if (userDetail?.id) {
-      const profileData: Profile = {
-        ...userDetail,
-        uninvest_usdc: amount || 0,
-      };
-      const { error } = await supabaseAdmin
-        .from('profiles')
-        .upsert([profileData]);
-      if (error) throw error;
-      return profileData;
-    }
-  } catch (error) {
-    console.error('Error:', error);
-    return null;
-  }
+export const sendUninvestRequest = async (amount: Profile['uninvest_usdc']) => {
+  _sendUninvestRequest(amount);
+  // console.log(userDetail?.id, amount);
+  // try {
+  //   if (userDetail?.id) {
+  //     const newUserDetail: User = {
+  //       ...userDetail,
+  //       uninvest_usdc: amount || 0,
+  //     };
+  //     const { error } = await supabaseAdmin
+  //       .from('profiles')
+  //       .upsert(newUserDetail)
+  //       .eq('id', userDetail.id);
+  //     if (error) throw error;
+  //     return newUserDetail;
+  //   }
+  // } catch (error) {
+  //   console.error('Error:', error);
+  //   return null;
+  // }
 };
 
 

@@ -6,14 +6,14 @@ import SignOutButton from './SignOutButton';
 import ResponsiveNavbar from './ResponsiveNavbar';
 
 import s from './Navbar.module.css';
-import { getRoleFromId } from '@/utils/supabase-admin';
+import { getRoleFromId } from '@/app/supabase-server';
 
 export default async function Navbar() {
   const supabase = createServerSupabaseClient();
   const {
     data: { user }
   } = await supabase.auth.getUser();
-  const [role] = user ? await Promise.all([getRoleFromId(user.id)]) : [];
+  const [role] = user ? await Promise.all([getRoleFromId()]) : [];
 
   return (
     <nav className={s.root}>

@@ -2,24 +2,19 @@ import {
   getSession
 } from '@/app/supabase-server';
 import {
-  getAllUserDetails, getRoleFromId
+  getRoleFromId
+} from '@/app/supabase-server';
+import {
+  getAllUserDetails
 } from '@/utils/supabase-admin';
 import { redirect } from 'next/navigation';
 import CopyableAddress from '@/components/CopyableAddress'
 import cn from 'classnames';
 
 export default async function Admin() {
-  const [session] = await Promise.all([
-    getSession()
+  const [session, role] = await Promise.all([
+    getSession(), getRoleFromId()
   ]);
-
-  const user = session?.user;
-  const [role, allUsers] = user ? await Promise.all([getRoleFromId(user.id), getAllUserDetails()]) : [];
-
-  console.log(allUsers)
-  const totalInvested = allUsers?.map((singleUser) => singleUser.invested_usdc).reduce((accumulator, currentValue) => (accumulator || 0) + (currentValue || 0), 0);
-  console.log(totalInvested);
-
   if (!session) {
     return redirect('/signin');
   }
@@ -27,15 +22,23 @@ export default async function Admin() {
     return redirect('/account');
   }
 
+  const user = session?.user;
+  const [allUsers] = user ? await Promise.all([getAllUserDetails()]) : [];
+
+  console.log(allUsers)
+  const totalInvested = allUsers?.map((singleUser) => singleUser.invested_usdc).reduce((accumulator, currentValue) => (accumulator || 0) + (currentValue || 0), 0);
+  console.log(totalInvested);
+
+
   return (
     <section className="mb-32 bg-black">
       <div className="max-w-6xl px-4 py-8 mx-auto sm:px-6 sm:pt-24 lg:px-8">
         <div className="sm:align-center sm:flex sm:flex-col">
           <h1 className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
             {/* Users */}
-          </h1> 
+          </h1>
           <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
-          Invested Total Amount: {totalInvested}
+            Invested Total Amount: {totalInvested}
           </p>
         </div>
       </div>

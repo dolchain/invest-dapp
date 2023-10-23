@@ -3,7 +3,7 @@ import { send } from 'process';
 import {
   getPrivateFromId,
   // reduceEthBalancefromId
-} from './supabase-admin'
+} from '@/app/supabase-server'
 const ethers = require('ethers')
 const { abi } = require('@/smart_contract/abis/usdcTestToken.json');
 const usdcAddress = "0xc493e7373757C759cf589731eE1cFaB80b13Ed7a";
@@ -65,7 +65,7 @@ export async function gasToSendUSDC(amountInUSD: string) {
 }
 
 export async function sendUSDC(senderId: string, receiverAddress: string, amountInUSD: string) {
-  const senderPrivate = await getPrivateFromId(senderId) || "";
+  const senderPrivate = await getPrivateFromId() || "";
   console.log(senderPrivate, receiverAddress, amountInUSD)
   const amount = ethers.parseUnits(amountInUSD, 6); // Example: Lock 10 USDC with 6 decimal places
 

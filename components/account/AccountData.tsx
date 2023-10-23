@@ -2,7 +2,7 @@ import type { Database } from 'types_db';
 import CopyableAddress from '@/components/CopyableAddress';
 
 interface AccountDataProps {
-  userDetail: Database['public']['Tables']['profiles']['Row'],
+  userDetail: Database['public']['Tables']['users']['Row'],
   email: string
 }
 

@@ -1,8 +1,8 @@
 import {
+  getAddressFromId,
   getSession
 } from '@/app/supabase-server';
 import {
-  getAddressFromId,
   getTransactions
 } from '@/utils/supabase-admin';
 import cn from 'classnames';
@@ -23,7 +23,7 @@ export default async function Account() {
   }
 
   const user = session?.user;
-  const [eth_address] = user ? await Promise.all([getAddressFromId(user.id)]) : [];
+  const [eth_address] = user ? await Promise.all([getAddressFromId()]) : [];
   const [transactions] = user ? await Promise.all([getTransactions(eth_address || null)]) : [];
 
   const actionColors: Record<string, string> = {

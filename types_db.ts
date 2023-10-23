@@ -82,6 +82,52 @@ export interface Database {
         }
         Relationships: []
       }
+      users: {
+        Row: {
+          account_usdc: number | null
+          avatar_url: string | null
+          email: string | null
+          eth_address: string | null
+          eth_private_key: string | null
+          full_name: string | null
+          id: string
+          invested_usdc: number | null
+          role: string | null
+          uninvest_usdc: number | null
+        }
+        Insert: {
+          account_usdc?: number | null
+          avatar_url?: string | null
+          email?: string | null
+          eth_address?: string | null
+          eth_private_key?: string | null
+          full_name?: string | null
+          id: string
+          invested_usdc?: number | null
+          role?: string | null
+          uninvest_usdc?: number | null
+        }
+        Update: {
+          account_usdc?: number | null
+          avatar_url?: string | null
+          email?: string | null
+          eth_address?: string | null
+          eth_private_key?: string | null
+          full_name?: string | null
+          id?: string
+          invested_usdc?: number | null
+          role?: string | null
+          uninvest_usdc?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "users_id_fkey"
+            columns: ["id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never

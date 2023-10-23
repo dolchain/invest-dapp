@@ -15,7 +15,7 @@ const Transfered = async (txHash, from, to, amount) => {
   // Compare eth address with receiver(Deposit)
   try {        
     const { data: userDetail } = await supabaseAdmin
-      .from('profiles')
+      .from('users')
       .select('*')
       .eq('eth_address', to)
       .single();
@@ -30,7 +30,7 @@ const Transfered = async (txHash, from, to, amount) => {
         uninvest_usdc: action == 'deposit' ? userDetail.uninvest_usdc : 0,
       };
       const {error} = await supabaseAdmin
-        .from('profiles')
+        .from('users')
         .upsert([profileData]);
       if (error) throw error;
     }
@@ -41,7 +41,7 @@ const Transfered = async (txHash, from, to, amount) => {
   // Compare eth address with sender(withdraw)
   try {        
   const { data: userDetail } = await supabaseAdmin
-    .from('profiles')
+    .from('users')
     .select('*')
     .eq('eth_address', from)
     .single();
@@ -57,7 +57,7 @@ const Transfered = async (txHash, from, to, amount) => {
         invested_usdc: userDetail?.invested_usdc + (action == 'invest' ? amount : 0),
       };
       const {error} = await supabaseAdmin
-        .from('profiles')
+        .from('users')
         .upsert([profileData]);
       if (error) throw error;
     }

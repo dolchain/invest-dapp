@@ -1,9 +1,6 @@
 import {
-  getSession
+  getSession, getUserDetails
 } from '@/app/supabase-server';
-import {
-  getUserDetail
-} from '@/utils/supabase-admin';
 import Button from '@/components/ui/Button';
 import { Database } from '@/types_db';
 import { createServerActionClient } from '@supabase/auth-helpers-nextjs';
@@ -29,12 +26,12 @@ import UnInvest from '@/components/account/UnInvest';
 export default async function Account() {
   // IMPORTANT: replace with your logic of how to mint/retrieve client secret
   // const clientSecret = "cos_1NvOGwAo4s8oHTt3u3rz3na6_secret_EbBDNAcASzNzlEcXRWUS31WCU00rrGoRtfi";
-  const [session] = await Promise.all([
-    getSession()
+  const [session, userDetail] = await Promise.all([
+    getSession(), getUserDetails()
   ]);
 
   const user = session?.user;
-  const [userDetail] = user ? await Promise.all([getUserDetail(user.id)]) : [];
+  // const [userDetail] = user ? await Promise.all([getUserDetail(user.id)]) : [];
 
   if (!session) {
     return redirect('/signin');

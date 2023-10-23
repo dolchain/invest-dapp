@@ -9,7 +9,7 @@ import StyledInput from '@/components/ui/styled/StyledInput'
 import StyledBox from '@/components/ui/styled/StyledBox'
 
 interface InvestProps {
-  userDetail: Database['public']['Tables']['profiles']['Row'];
+  userDetail: Database['public']['Tables']['users']['Row'];
 }
 
 const Invest = ({ userDetail }: InvestProps) => {
