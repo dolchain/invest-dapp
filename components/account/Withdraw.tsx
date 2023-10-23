@@ -21,8 +21,6 @@ const Withdraw = ({ userDetail }: WithdrawProps) => {
   const [amount, setAmount] = useState("0");
   const [amountError, setAmountError] = useState("");
   const [actualAmount, setActualAmount] = useState(0);
-  // const [gas, setGas] = useState("");
-  // const [usd, setUSD] = useState(0);
 
   const isValidEthereumAddress = () => {
     const ethAddressRegex = /^0x[0-9a-fA-F]{40}$/;
@@ -33,18 +31,9 @@ const Withdraw = ({ userDetail }: WithdrawProps) => {
     return parseFloat(amount) > txFee && amount != '' && (userDetail.account_usdc != null ? (parseFloat(amount) <= userDetail.account_usdc) : true)
   }
 
-  // const getEstimatedGas = async () => {
-  //   const estimatedGas = await gasToSendUSDC(amount);
-  //   console.log(typeof estimatedGas);
-  //   setGas(estimatedGas.eth);
-  //   setUSD(estimatedGas.usd);
-  // }
-
   useEffect(() => {
-    // setGas("");
     if (isValidEthereumAddress() && isValidWithdrawalAmount()) {
       setActualAmount(parseFloat(amount) - txFee);
-      // getEstimatedGas();
     } else {
       setActualAmount(0)
     }
@@ -62,14 +51,14 @@ const Withdraw = ({ userDetail }: WithdrawProps) => {
     } else if (parseFloat(amount) <= txFee) {
       setAmountError("Withdrawal amount should cover the fee(>15)");
       return
-    } else if (parseFloat(amount) > (userDetail?.account_usdc || 0)) {
+    } else if (parseFloat(amount) > (userDetail?.account_usdc!)) {
       setAmountError("Your account wallet balance is NOT enough");
       return
     }
 
     try {
       await toast.promise(
-        sendUSDC(userDetail.id || "", address, (parseFloat(amount) - txFee).toString()),
+        sendUSDC(userDetail.id!, address, (parseFloat(amount) - txFee).toString()),
         {
           pending: 'Transaction is pending',
           success: 'Transaction is confirmed 👌',

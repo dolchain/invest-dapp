@@ -11,7 +11,6 @@ import { sendEther } from './usdc';
 import { _sendUninvestRequest } from '@/app/supabase-server'
 
 type User = Database['public']['Tables']['users']['Row'];
-type Profile = Database['public']['Tables']['profiles']['Row'];
 type Transaction = Database['public']['Tables']['transactions']['Row'];
 
 // Note: supabaseAdmin uses the SERVICE_ROLE_KEY which you must only use in a secure server-side context
@@ -26,8 +25,6 @@ export const getAllUserDetails = async () => {
     const { data: details } = await supabaseAdmin
       .from('users')
       .select('*')
-    // .eq('role', "user")
-    // console.log('userDetails', userDetails);
     return details
   } catch (error) {
     console.error('Error:', error);
@@ -35,33 +32,15 @@ export const getAllUserDetails = async () => {
   }
 };
 
-export const sendUninvestRequest = async (amount: Profile['uninvest_usdc']) => {
+export const sendUninvestRequest = async (amount: User['uninvest_usdc']) => {
   _sendUninvestRequest(amount);
-  // console.log(userDetail?.id, amount);
-  // try {
-  //   if (userDetail?.id) {
-  //     const newUserDetail: User = {
-  //       ...userDetail,
-  //       uninvest_usdc: amount || 0,
-  //     };
-  //     const { error } = await supabaseAdmin
-  //       .from('profiles')
-  //       .upsert(newUserDetail)
-  //       .eq('id', userDetail.id);
-  //     if (error) throw error;
-  //     return newUserDetail;
-  //   }
-  // } catch (error) {
-  //   console.error('Error:', error);
-  //   return null;
-  // }
 };
 
 
 export const getTransactions = async (receiver: Transaction['to']) => {
   try {
     if (receiver == null) return;
-    // get user's detail from profiles table
+    // get user's detail from users table
     const { data: depositTxs } = await supabaseAdmin
       .from('transactions')
       .select('*')
@@ -70,7 +49,7 @@ export const getTransactions = async (receiver: Transaction['to']) => {
       .from('transactions')
       .select('*')
       .eq('from', receiver);
-    return [...depositTxs || [], ...withdrawTxs || []].sort((A, B) => new Date(A.timestamp || 0).getTime() - new Date(B.timestamp || 0).getTime());
+    return [...depositTxs || [], ...withdrawTxs || []].sort((A, B) => new Date(A.timestamp!).getTime() - new Date(B.timestamp!).getTime());
   } catch (error) {
     console.error('Error:', error);
     return null;

@@ -25,10 +25,7 @@ export default async function Admin() {
   const user = session?.user;
   const [allUsers] = user ? await Promise.all([getAllUserDetails()]) : [];
 
-  console.log(allUsers)
-  const totalInvested = allUsers?.map((singleUser) => singleUser.invested_usdc).reduce((accumulator, currentValue) => (accumulator || 0) + (currentValue || 0), 0);
-  console.log(totalInvested);
-
+  const totalInvested = allUsers?.map((singleUser) => singleUser.invested_usdc).reduce((accumulator, currentValue) => (accumulator!) + (currentValue!), 0);
 
   return (
     <section className="mb-32 bg-black">
@@ -57,7 +54,7 @@ export default async function Admin() {
             {allUsers && allUsers?.length && allUsers.map((singleUser) => (
               <tr className={cn('border', 'px-4', 'py-2', singleUser.uninvest_usdc == 0 ? "text-white-400" : "bg-yellow-100 text-gray-900")}>
                 <td className="border px-4 py-2 ">{singleUser.email}</td>
-                <td className="border px-4 py-2"><CopyableAddress address={singleUser.eth_address || ""} /></td>
+                <td className="border px-4 py-2"><CopyableAddress address={singleUser.eth_address!} /></td>
                 <td className="border px-4 py-2">{singleUser.account_usdc}</td>
                 <td className="border px-4 py-2">{singleUser.invested_usdc}</td>
                 <td className="border px-4 py-2">{singleUser.uninvest_usdc}</td>

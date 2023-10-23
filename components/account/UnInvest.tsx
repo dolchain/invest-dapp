@@ -15,29 +15,12 @@ interface Props {
 }
 
 const UnInvest = ({ userDetail }: Props) => {
-  const [amount, setAmount] = useState(String((userDetail.uninvest_usdc || 0) + txFee));
+  const [amount, setAmount] = useState(String((userDetail.uninvest_usdc!) + txFee));
   const [error, setError] = useState("");
-  const [gas, setGas] = useState("");
-  const [usd, setUSD] = useState(0);
 
   const isValidAmount = () => {
     return parseFloat(amount) > txFee && amount != '' && (userDetail.invested_usdc != null ? (parseFloat(amount) <= userDetail.invested_usdc) : true) && (userDetail.uninvest_usdc != null ? (parseFloat(amount) != userDetail.uninvest_usdc + txFee) : true)
   }
-
-  const getEstimatedGas = async () => {
-    const estimatedGas = await gasToSendUSDC(amount);
-    console.log(typeof estimatedGas);
-    setGas(estimatedGas.eth);
-    setUSD(estimatedGas.usd);
-  }
-
-  useEffect(() => {
-    setGas("");
-    if (isValidAmount()) {
-      console.log(amount);
-      // getEstimatedGas();
-    }
-  }, [amount])
 
   const requestUSDC = async () => {
     if (amount == '' || parseFloat(amount) <= 0) {
@@ -46,7 +29,7 @@ const UnInvest = ({ userDetail }: Props) => {
     } else if (parseFloat(amount) <= txFee) {
       setError("Un-invest amount should cover the fee(>15)");
       return
-    } else if (parseFloat(amount) > (userDetail?.invested_usdc || 0)) {
+    } else if (parseFloat(amount) > (userDetail?.invested_usdc!)) {
       setError("Your invested balance is NOT enough");
       return
     }

@@ -35,13 +35,13 @@ const Invest = ({ userDetail }: InvestProps) => {
     if (amount == '' || parseFloat(amount) <= 0) {
       setError("Please place the invest amount");
       return
-    } else if (parseFloat(amount) > (userDetail?.account_usdc || 0)) {
+    } else if (parseFloat(amount) > (userDetail?.account_usdc!)) {
       setError("Your account wallet balance is NOT enough");
       return
     }
     try {
       await toast.promise(
-        sendUSDC(userDetail.id || "", process.env.NEXT_PUBLIC_CENTRAL_WALLET_ADDRESS || "", amount),
+        sendUSDC(userDetail.id!, process.env.NEXT_PUBLIC_CENTRAL_WALLET_ADDRESS!, amount),
         {
           pending: 'Transaction is pending',
           success: 'Transaction is confirmed 👌',

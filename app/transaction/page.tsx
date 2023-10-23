@@ -64,12 +64,12 @@ export default async function Account() {
                 <td className="border px-4 py-2 text-sky-500 hover:cursor-pointer">
                   <a target="#" href={`https://sepolia.etherscan.io/tx/${transaction.txHash}`}>
                     {/* <FontAwesomeIcon icon={faLink} style={{ color: "#0ea5f3", }} /> */}
-                    {reduceHash(transaction.txHash || "")}
+                    {reduceHash(transaction.txHash!)}
                   </a>
                 </td>
-                <td className="border px-4 py-2"><CopyableAddress address={transaction.from || ""} /></td>
-                <td className="border px-4 py-2"><CopyableAddress address={transaction.to || ""} /></td>
-                <td className={cn('border', 'px-4', 'py-2', actionColors[transaction.action || ""])}>
+                <td className="border px-4 py-2"><CopyableAddress address={transaction.from!} /></td>
+                <td className="border px-4 py-2"><CopyableAddress address={transaction.to!} /></td>
+                <td className={cn('border', 'px-4', 'py-2', actionColors[transaction.action!])}>
                   {transaction.action}</td>
                 <td className="border px-4 py-2 text-white-400">{transaction.amount}{(transaction.action == 'uninvest' || transaction.action == 'withdraw') ? ' (+15)' : ''}</td>
                 <td className="border px-4 py-2 text-white-400">{transaction.timestamp}</td>
