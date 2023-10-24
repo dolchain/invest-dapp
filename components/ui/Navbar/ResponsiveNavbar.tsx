@@ -39,7 +39,7 @@ export default function ResponsiveNavbar({ user, role }: Props) {
               {
                 role == 'admin' && (
                   <Link href="/admin" className={s.link}>
-                    Admin-Dashboard
+                    Admin
                   </Link>
                 )
               }

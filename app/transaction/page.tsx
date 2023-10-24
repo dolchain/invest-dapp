@@ -60,7 +60,7 @@ export default async function Account() {
           </thead>
           <tbody>
             {transactions && transactions?.length && transactions.map((transaction) => (
-              <tr className="">
+              <tr key={transaction.id} className="">
                 <td className="border px-4 py-2 text-sky-500 hover:cursor-pointer">
                   <a target="#" href={`https://sepolia.etherscan.io/tx/${transaction.txHash}`}>
                     {/* <FontAwesomeIcon icon={faLink} style={{ color: "#0ea5f3", }} /> */}

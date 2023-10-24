@@ -8,7 +8,8 @@ import { Wallet } from 'ethers';
 import Stripe from 'stripe';
 import type { Database } from 'types_db';
 import { sendEther } from './usdc';
-import { _sendUninvestRequest } from '@/app/supabase-server'
+import { sendUninvestRequest } from '@/app/supabase-server'
+import supabase from './supabase';
 
 type User = Database['public']['Tables']['users']['Row'];
 type Transaction = Database['public']['Tables']['transactions']['Row'];
@@ -20,20 +21,32 @@ const supabaseAdmin = createClient<Database>(
   process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 );
 
-export const getAllUserDetails = async () => {
+
+
+export const _updateCentralWalletAddress = async (address: string) => {
   try {
-    const { data: details } = await supabaseAdmin
-      .from('users')
-      .select('*')
-    return details
+    const { data: config } = await supabaseAdmin
+      .from('config')
+      .select()
+      .eq('key', 'central_wallet')
+      .single()
+    const newConfig = {
+      ...config,
+      value: address,
+    }
+    const { error } = await supabaseAdmin.from('config').upsert([newConfig]);
+    if (error) {
+      console.error('Error:', error);
+      throw error;
+    }
   } catch (error) {
     console.error('Error:', error);
     return null;
   }
 };
 
-export const sendUninvestRequest = async (amount: User['uninvest_usdc']) => {
-  _sendUninvestRequest(amount);
+export const _sendUninvestRequest = async (amount: User['uninvest_usdc']) => {
+  sendUninvestRequest(amount);
 };
 
 
