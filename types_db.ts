@@ -9,6 +9,58 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      balances: {
+        Row: {
+          account_usdc: number | null
+          email: string | null
+          eth_address: string | null
+          id: string
+          invested_usdc: number | null
+          uninvest_usdc: number | null
+        }
+        Insert: {
+          account_usdc?: number | null
+          email?: string | null
+          eth_address?: string | null
+          id: string
+          invested_usdc?: number | null
+          uninvest_usdc?: number | null
+        }
+        Update: {
+          account_usdc?: number | null
+          email?: string | null
+          eth_address?: string | null
+          id?: string
+          invested_usdc?: number | null
+          uninvest_usdc?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "balances_id_fkey"
+            columns: ["id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      config: {
+        Row: {
+          id: number
+          key: string | null
+          value: string | null
+        }
+        Insert: {
+          id?: number
+          key?: string | null
+          value?: string | null
+        }
+        Update: {
+          id?: number
+          key?: string | null
+          value?: string | null
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
           action: string | null

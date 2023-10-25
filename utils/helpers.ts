@@ -1,5 +1,3 @@
-import { Database } from '@/types_db';
-
 export const getURL = () => {
   let url =
     process?.env?.NEXT_PUBLIC_SITE_URL ?? // Set this to your site URL in production env.
@@ -19,8 +17,8 @@ export const toDateTime = (secs: number) => {
 };
 
 export const reduceAddress = (str: string): string => {
-  return str.substring(0, 12).concat("...").concat(str.slice(-6));
+  return str == null ? "" : str.substring(0, 12).concat("...").concat(str.slice(-6));
 }
 export const reduceHash = (str: string): string => {
-  return str.substring(0, 16).concat("...");
+  return str == null ? "" : str.substring(0, 16).concat("...");
 }

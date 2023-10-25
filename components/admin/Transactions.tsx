@@ -1,48 +1,46 @@
-import {
-  getAddressFromId,
-  getSession
-} from '@/app/supabase-server';
-import {
-  getTransactions
-} from '@/utils/supabase-admin';
+"use client"
+import type { Database } from 'types_db';
+import CopyableAddress from '@/components/CopyableAddress';
+import { useEffect, useState } from 'react'
+import supabase from '@/utils/supabase'
 import cn from 'classnames';
+import { reduceHash } from '@/utils/helpers';
 
-import { reduceHash, reduceAddress } from '@/utils/helpers';
-import { redirect } from 'next/navigation';
-import CopyableAddress from '@/components/CopyableAddress'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faLink } from '@fortawesome/free-solid-svg-icons'
+interface TransactionsProp {
+  txes: any
+}
 
-export default async function Account() {
-  const [session] = await Promise.all([
-    getSession()
-  ]);
+const actionColors: Record<string, string> = {
+  'deposit': "text-green-500",
+  'withdraw': "text-yellow-500",
+  'invest': "text-indigo-500",
+  'uninvest': "text-red-500",
+}
 
-  if (!session) {
-    return redirect('/signin');
-  }
+const Transactions = ({ txes }: TransactionsProp) => {
+  const [transactions, setTransactions] = useState(txes);
 
-  const user = session?.user;
-  const [eth_address] = user ? await Promise.all([getAddressFromId()]) : [];
-  const [transactions] = user ? await Promise.all([getTransactions(eth_address || null)]) : [];
+  useEffect(() => {
+    const channel = supabase
+      .channel('*')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'transactions' }, (payload) => {
+        if (payload.new.action == 'invest' || payload.new.action == 'uninvest')
+          setTransactions((transactions: any) => [payload.new, ...transactions])
+      })
+      .subscribe()
 
-  const actionColors: Record<string, string> = {
-    'deposit': "text-green-500",
-    'withdraw': "text-yellow-500",
-    'invest': "text-indigo-500",
-    'uninvest': "text-red-500",
-  }
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [txes])
 
   return (
     <section className="mb-32 bg-black">
-      <div className="max-w-6xl px-4 py-8 mx-auto sm:px-6 sm:pt-24 lg:px-8">
+      <div className="max-w-6xl px-4 py-4 mx-auto sm:px-6 sm:pt-6 lg:px-8">
         <div className="sm:align-center sm:flex sm:flex-col">
           <h1 className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
-            Transaction History
+            Transactions
           </h1>
-          <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
-            {/* We partnered with Stripe for a simplified billing. */}
-          </p>
         </div>
       </div>
       <div className="container mx-auto">
@@ -59,7 +57,7 @@ export default async function Account() {
             </tr>
           </thead>
           <tbody>
-            {transactions && transactions?.length && transactions.map((transaction) => (
+            {transactions && transactions?.length && transactions.map((transaction: any) => (
               <tr key={transaction.id}>
                 <td className="border px-4 py-2 text-sky-500 hover:cursor-pointer">
                   <a target="#" href={`https://sepolia.etherscan.io/tx/${transaction.txHash}`}>
@@ -71,7 +69,7 @@ export default async function Account() {
                 <td className="border px-4 py-2"><CopyableAddress address={transaction.to!} /></td>
                 <td className={cn('border', 'px-4', 'py-2', actionColors[transaction.action!])}>
                   {transaction.action}</td>
-                <td className="border px-4 py-2 text-white-400">{transaction.amount}{(transaction.action == 'uninvest' || transaction.action == 'withdraw') ? ' (+15)' : ''}</td>
+                <td className="border px-4 py-2 text-white-400">{transaction.amount}{(transaction.action == 'uninvest') ? ' (+15)' : ''}</td>
                 <td className="border px-4 py-2 text-white-400">{transaction.timestamp}</td>
                 {/* <td className="border px-4 py-2 text-white-400">{transaction.timestamp}</td> */}
               </tr>
@@ -79,7 +77,8 @@ export default async function Account() {
           </tbody>
         </table>
       </div>
-
     </section >
   );
 }
+
+export default Transactions;

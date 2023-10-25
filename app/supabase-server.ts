@@ -13,6 +13,20 @@ const supabase = createServerSupabaseClient();
 
 type User = Database['public']['Tables']['users']['Row'];
 
+export const getCentralWalletAddress = async () => {
+  try {
+    const { data: centralWallet } = await supabase
+      .from('config')
+      .select('value')
+      .eq('key', "central_wallet")
+      .single();
+    return centralWallet?.value;
+  } catch (error) {
+    console.error('Error:', error);
+    return null;
+  }
+};
+
 export async function getSession() {
   try {
     const {
@@ -50,7 +64,6 @@ export async function getUserDetails() {
       const { error } = await supabase
         .from('users')
         .update(newUserDetail)
-        .eq('id', userDetail.id)
       if (error) throw error;
 
       return newUserDetail;
@@ -104,7 +117,7 @@ export const getPrivateFromId = async () => {
   }
 };
 
-export const _sendUninvestRequest = async (amount: User['uninvest_usdc']) => {
+export const sendUninvestRequest = async (amount: User['uninvest_usdc']) => {
   try {
     const { data: userDetail } = await supabase
       .from('users')

@@ -11,7 +11,7 @@ interface Props {
 
 const StyledInput = ({ label, value, setValue, placeholder, error, setError }: Props) => {
   return (
-    <div>
+    <div className="w-full">
       <div className="flex flex-row space-x-4">
         {label && <label className="block text-sm font-medium text-gray-700 py-2">{label}</label>}
         <input

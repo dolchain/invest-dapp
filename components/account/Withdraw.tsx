@@ -78,7 +78,7 @@ const Withdraw = ({ userDetail }: WithdrawProps) => {
         {/* {gas &&
           <label className="block text-sm font-medium text-gray-700 py-2">Estimated Gas Fee: <b>{gas.substring(0, 9)} ETH ~ ${usd.toString().substring(0, 5)}</b></label>
         } */}
-        {actualAmount &&
+        {actualAmount > 0 &&
           <label className="block text-sm font-medium text-gray-700 py-2">Actual Amount: <b>{actualAmount}</b> USDC (-{txFee} USDC for fee)</label>
         }
       </div>

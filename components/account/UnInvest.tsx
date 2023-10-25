@@ -2,7 +2,7 @@
 import { gasToSendUSDC, sendUSDC } from "@/utils/usdc";
 import { useState, useEffect } from "react";
 import { toast } from 'react-toastify'
-import { sendUninvestRequest } from "@/utils/supabase-admin";
+import { _sendUninvestRequest } from "@/utils/supabase-admin";
 import type { Database } from 'types_db';
 import StyledButton from '@/components/ui/styled/StyledButton'
 import StyledInput from '@/components/ui/styled/StyledInput'
@@ -34,7 +34,7 @@ const UnInvest = ({ userDetail }: Props) => {
       return
     }
     await toast.promise(
-      sendUninvestRequest(parseFloat(amount) - txFee),
+      _sendUninvestRequest(parseFloat(amount) - txFee),
       {
         pending: 'Submiting request',
         success: 'Submited successfully 👌',

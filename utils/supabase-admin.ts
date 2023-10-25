@@ -8,7 +8,7 @@ import { Wallet } from 'ethers';
 import Stripe from 'stripe';
 import type { Database } from 'types_db';
 import { sendEther } from './usdc';
-import { _sendUninvestRequest } from '@/app/supabase-server'
+import { sendUninvestRequest } from '@/app/supabase-server'
 
 type User = Database['public']['Tables']['users']['Row'];
 type Transaction = Database['public']['Tables']['transactions']['Row'];
@@ -20,20 +20,64 @@ const supabaseAdmin = createClient<Database>(
   process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 );
 
-export const getAllUserDetails = async () => {
+export const plusInterestToUser = async (id: string, invested: number) => {
   try {
-    const { data: details } = await supabaseAdmin
+    const { data: userDetail } = await supabaseAdmin
       .from('users')
       .select('*')
-    return details
+      .eq('id', id)
+      .single()
+    if (userDetail) {
+      const newUserDetail: User = {
+        ...userDetail,
+        invested_usdc: invested
+      };
+      console.log(newUserDetail);
+      const { data, error } = await supabaseAdmin
+        .from('users')
+        .update(newUserDetail)
+        .eq('id', id)
+        .select()
+        .single()
+      console.log(data);
+      if (error) {
+        console.log(error);
+        throw error;
+      }
+
+      return newUserDetail;
+    }
+    return userDetail;
   } catch (error) {
     console.error('Error:', error);
     return null;
   }
 };
 
-export const sendUninvestRequest = async (amount: User['uninvest_usdc']) => {
-  _sendUninvestRequest(amount);
+export const updateConfigValue = async (key: string, value: string) => {
+  try {
+    const { data: config } = await supabaseAdmin
+      .from('config')
+      .select()
+      .eq('key', key)
+      .single()
+    const newConfig = {
+      ...config,
+      "value": value,
+    }
+    const { error } = await supabaseAdmin.from('config').upsert([newConfig]);
+    if (error) {
+      console.error('Error:', error);
+      throw error;
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    return null;
+  }
+};
+
+export const _sendUninvestRequest = async (amount: User['uninvest_usdc']) => {
+  sendUninvestRequest(amount);
 };
 
 

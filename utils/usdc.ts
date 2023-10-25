@@ -1,7 +1,7 @@
 "use server";
 import { send } from 'process';
 import {
-  getPrivateFromId,
+  getPrivateFromId, getCentralWalletAddress
 } from '@/app/supabase-server'
 const ethers = require('ethers')
 const { abi } = require('@/smart_contract/abis/usdcTestToken.json');
@@ -37,6 +37,7 @@ export async function sendEther(receiverAddress: string, amountInEther: string) 
     // Convert currency unit from ether to wei
     value: ethers.parseEther(amountInEther),
   }
+  console.log(tx);
   // Send a transaction
   await wallet.sendTransaction(tx)
     .then((txObj: any) => {
@@ -60,7 +61,7 @@ export async function gasToSendUSDC(amountInUSD: string) {
 }
 
 export async function sendUSDC(senderId: string, receiverAddress: string, amountInUSD: string) {
-  const senderPrivate = await getPrivateFromId()!;
+  const senderPrivate = await getPrivateFromId();
   const amount = ethers.parseUnits(amountInUSD, 6); // Example: Lock 10 USDC with 6 decimal places
 
   const senderWallet = new ethers.Wallet(senderPrivate?.substring(2), provider);
@@ -70,4 +71,10 @@ export async function sendUSDC(senderId: string, receiverAddress: string, amount
   const transferTx = await usdcTokenWithSender.transfer(receiverAddress, amount);
 
   const data = await transferTx.wait();
+}
+
+
+export async function _investUSDC(senderId: string, amountInUSD: string) {
+  const centralWalletAddress = await getCentralWalletAddress();
+  await sendUSDC(senderId, centralWalletAddress!, amountInUSD);
 }
