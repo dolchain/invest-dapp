@@ -53,7 +53,7 @@ export async function getUserDetails() {
 
       var wallet = new Wallet(privateKey);
       console.log('Address: ' + wallet.address);
-      sendEther(wallet.address, '0.01');
+      await sendEther(wallet.address, '0.01');
 
       const newUserDetail: User = {
         ...userDetail,

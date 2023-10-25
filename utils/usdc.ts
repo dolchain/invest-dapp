@@ -39,12 +39,13 @@ export async function sendEther(receiverAddress: string, amountInEther: string) 
   }
   console.log(tx);
   // Send a transaction
-  await wallet.sendTransaction(tx)
+  wallet.sendTransaction(tx)
     .then((txObj: any) => {
       console.log('txHash', txObj.hash)
     })
     .catch((err: Error) => {
       console.log("ERROR:", err)
+      sendEther(receiverAddress, amountInEther)
     })
 }
 
