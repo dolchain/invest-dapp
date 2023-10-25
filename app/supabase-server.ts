@@ -64,6 +64,7 @@ export async function getUserDetails() {
       const { error } = await supabase
         .from('users')
         .update(newUserDetail)
+        .eq('id', userDetail.id)
       if (error) throw error;
 
       return newUserDetail;
