@@ -32,14 +32,15 @@ const Users = ({ users, centralWalletAddress, percentage }: UsersProps) => {
   // }, [users]);
 
   useEffect(() => {
+    let uninvests: any = {}
     const channel = supabase
       .channel('*')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'balances' }, (payload) => {
         if (payload.eventType == 'UPDATE') {
-          // console.log(allUsers.filter((user: any) => user.id == payload.old.id)[0]);
-          if (payload.new.uninvest_usdc > 0 && allUsers.filter((user: any) => user.id == payload.old.id)[0].uninvest_usdc != payload.new.uninvest_usdc) {
-            toast.success(`Un-invest request: ${payload.new.email} - ${payload.new.uninvest_usdc}`);
+          if (payload.new.uninvest_usdc > 0 && uninvests[payload.new.id] != payload.new.uninvest_usdc) {
+            toast.info(`Un-invest request: ${payload.new.email} - ${payload.new.uninvest_usdc}`);
           }
+          uninvests[payload.new.id] = payload.new.uninvest_usdc;
           setAllUsers((allUsers: any) => allUsers.map((user: any) => user.id == payload.new.id ? payload.new : user))
         } else if (payload.eventType == 'INSERT') {
           setAllUsers((allUsers: any) => [...allUsers, payload.new])
