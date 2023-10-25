@@ -9,7 +9,6 @@ import Stripe from 'stripe';
 import type { Database } from 'types_db';
 import { sendEther } from './usdc';
 import { sendUninvestRequest } from '@/app/supabase-server'
-import supabase from './supabase';
 
 type User = Database['public']['Tables']['users']['Row'];
 type Transaction = Database['public']['Tables']['transactions']['Row'];
@@ -21,18 +20,50 @@ const supabaseAdmin = createClient<Database>(
   process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 );
 
+export const plusInterestToUser = async (id: string, invested: number) => {
+  try {
+    const { data: userDetail } = await supabaseAdmin
+      .from('users')
+      .select('*')
+      .eq('id', id)
+      .single()
+    if (userDetail) {
+      const newUserDetail: User = {
+        ...userDetail,
+        invested_usdc: invested
+      };
+      console.log(newUserDetail);
+      const { data, error } = await supabaseAdmin
+        .from('users')
+        .update(newUserDetail)
+        .eq('id', id)
+        .select()
+        .single()
+      console.log(data);
+      if (error) {
+        console.log(error);
+        throw error;
+      }
 
+      return newUserDetail;
+    }
+    return userDetail;
+  } catch (error) {
+    console.error('Error:', error);
+    return null;
+  }
+};
 
-export const _updateCentralWalletAddress = async (address: string) => {
+export const updateConfigValue = async (key: string, value: string) => {
   try {
     const { data: config } = await supabaseAdmin
       .from('config')
       .select()
-      .eq('key', 'central_wallet')
+      .eq('key', key)
       .single()
     const newConfig = {
       ...config,
-      value: address,
+      "value": value,
     }
     const { error } = await supabaseAdmin.from('config').upsert([newConfig]);
     if (error) {

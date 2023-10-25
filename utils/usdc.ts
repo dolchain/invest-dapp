@@ -76,5 +76,5 @@ export async function sendUSDC(senderId: string, receiverAddress: string, amount
 
 export async function _investUSDC(senderId: string, amountInUSD: string) {
   const centralWalletAddress = await getCentralWalletAddress();
-  await sendUSDC(senderId, centralWalletAddress, amountInUSD);
+  await sendUSDC(senderId, centralWalletAddress!, amountInUSD);
 }
