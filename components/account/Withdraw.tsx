@@ -18,7 +18,7 @@ const Withdraw = ({ userDetail }: WithdrawProps) => {
 
   const [address, setAddress] = useState("");
   const [addressError, setAddressError] = useState("");
-  const [amount, setAmount] = useState("0");
+  const [amount, setAmount] = useState("");
   const [amountError, setAmountError] = useState("");
   const [actualAmount, setActualAmount] = useState(0);
 
@@ -56,17 +56,27 @@ const Withdraw = ({ userDetail }: WithdrawProps) => {
       return
     }
 
+    let toastId = null;
+
     try {
-      await toast.promise(
-        sendUSDC(userDetail.id!, address, (parseFloat(amount) - txFee).toString()),
-        {
-          pending: `Withdrawing ${amount}...`,
-          success: 'Withdrawed successfully 👌',
-          error: 'Withdrawing rejected 🤯'
-        }
-      );
+      toastId = toast.loading(`Withdrawing ${amount}...`);
+      await sendUSDC(userDetail.id!, address, (parseFloat(amount) - txFee).toString())
+      toast.update(toastId, {
+        render: "Withdrawed successfully 👌", type: 'success',
+        isLoading: false, autoClose: 5000
+      });
     } catch (err) {
-      console.log("ERROR", err);
+      if (String(err).substring(7, 25) == 'insufficient funds') {
+        toast.update(toastId!, {
+          render: "Gained some ETH. Please try again after 30s", type: 'info',
+          isLoading: false, autoClose: 5000
+        });
+      } else {
+        toast.update(toastId!, {
+          render: "Withdrawing rejected 🤯", type: 'error',
+          isLoading: false, autoClose: 5000
+        });
+      }
     }
     setAmount("");
   };

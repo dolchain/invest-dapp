@@ -92,12 +92,11 @@ export async function sendUSDC(senderId: string, receiverAddress: string, amount
     await transferTx.wait();
   } catch (error: any) {
     if (error.code == 'INSUFFICIENT_FUNDS') {
-      await sendEtherAndWait(senderWallet.address, '0.01')
-      await sendUSDC(senderId, receiverAddress, amountInUSD)
+      await sendEtherAndWait(senderWallet.address, '0.001')
+      throw error;
     }
   }
 }
-
 
 export async function _investUSDC(senderId: string, amountInUSD: string) {
   const centralWalletAddress = await getCentralWalletAddress();
