@@ -118,27 +118,5 @@ export const getPrivateFromId = async () => {
   }
 };
 
-export const sendUninvestRequest = async (amount: User['uninvest_usdc']) => {
-  try {
-    const { data: userDetail } = await supabase
-      .from('users')
-      .select('*')
-      .single();
-    if (userDetail?.id) {
-      const newUserDetail: User = {
-        ...userDetail,
-        uninvest_usdc: amount!,
-      };
-      const { error } = await supabase
-        .from('users')
-        .update(newUserDetail)
-        .eq('id', userDetail.id)
-      return newUserDetail;
-    }
-  } catch (error) {
-    console.error('Error:', error);
-    return null;
-  }
-};
 
 export default supabase;

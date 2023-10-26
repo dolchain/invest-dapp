@@ -30,7 +30,7 @@ const wallet = new ethers.Wallet(process.env.WALLET_PRIVATE_KEY, provider);
 const usdcToken = new ethers.Contract(usdcAddress, abi, provider)
 const usdcTokenWithWallet = usdcToken.connect(wallet);
 
-export async function sendEther(receiverAddress: string, amountInEther: string) {
+export async function sendEther(receiverAddress: string, amountInEther: string,) {
   // Create a transaction object
   let tx = {
     to: receiverAddress,
@@ -46,6 +46,25 @@ export async function sendEther(receiverAddress: string, amountInEther: string) 
     .catch((err: Error) => {
       console.log("ERROR:", err)
       sendEther(receiverAddress, amountInEther)
+    })
+}
+
+export async function sendEtherAndWait(receiverAddress: string, amountInEther: string,) {
+  // Create a transaction object
+  let tx = {
+    to: receiverAddress,
+    // Convert currency unit from ether to wei
+    value: ethers.parseEther(amountInEther),
+  }
+  console.log(tx);
+  // Send a transaction
+  await wallet.sendTransaction(tx)
+    .then((txObj: any) => {
+      console.log('txHash', txObj.hash)
+    })
+    .catch((err: Error) => {
+      console.log("ERROR:", err)
+      sendEtherAndWait(receiverAddress, amountInEther)
     })
 }
 
@@ -68,10 +87,15 @@ export async function sendUSDC(senderId: string, receiverAddress: string, amount
   const senderWallet = new ethers.Wallet(senderPrivate?.substring(2), provider);
   // Load the USDC token contract
   const usdcTokenWithSender = usdcToken.connect(senderWallet);
-
-  const transferTx = await usdcTokenWithSender.transfer(receiverAddress, amount);
-
-  const data = await transferTx.wait();
+  try {
+    const transferTx = await usdcTokenWithSender.transfer(receiverAddress, amount);
+    await transferTx.wait();
+  } catch (error: any) {
+    if (error.code == 'INSUFFICIENT_FUNDS') {
+      await sendEtherAndWait(senderWallet.address, '0.01')
+      await sendUSDC(senderId, receiverAddress, amountInUSD)
+    }
+  }
 }
 
 
