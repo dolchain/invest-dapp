@@ -50,7 +50,8 @@ const WithMetamask = ({ eth_address }: Props) => {
       })
   })
 
-  const [depositAmount, setDepositAmount] = useState("0");
+
+  const [depositAmount, setDepositAmount] = useState("");
   const [error, setError] = useState("");
   const [toastId, setToastId] = useState("")
 

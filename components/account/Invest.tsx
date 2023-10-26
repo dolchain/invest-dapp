@@ -14,7 +14,7 @@ interface InvestProps {
 
 const Invest = ({ userDetail }: InvestProps) => {
 
-  const [amount, setAmount] = useState("0");
+  const [amount, setAmount] = useState("");
   const [error, setError] = useState("");
 
   const investUSDC = async () => {
@@ -25,17 +25,26 @@ const Invest = ({ userDetail }: InvestProps) => {
       setError("Your account wallet balance is NOT enough");
       return
     }
+    let toastId = null;
     try {
-      await toast.promise(
-        _investUSDC(userDetail.id!, amount),
-        {
-          pending: `Investing ${amount}...`,
-          success: 'Invested successfully 👌',
-          error: 'Investing rejected 🤯'
-        }
-      );
-    } catch (err) {
-      console.log("ERROR", err);
+      toastId = toast.loading(`Investing ${amount}...`);
+      await _investUSDC(userDetail.id!, amount)
+      toast.update(toastId, {
+        render: "Invested successfully 👌", type: 'success',
+        isLoading: false, autoClose: 5000
+      });
+    } catch (err: any) {
+      if (String(err).substring(7, 25) == 'insufficient funds') {
+        toast.update(toastId!, {
+          render: "Gained some ETH. Please try again after 30s", type: 'info',
+          isLoading: false, autoClose: 5000
+        });
+      } else {
+        toast.update(toastId!, {
+          render: "Investment rejected 🤯", type: 'success',
+          isLoading: false, autoClose: 5000
+        });
+      }
     }
     setAmount("");
   };

@@ -15,7 +15,7 @@ interface Props {
 }
 
 const UnInvest = ({ userDetail }: Props) => {
-  const [amount, setAmount] = useState(String((userDetail.uninvest_usdc!) + txFee));
+  const [amount, setAmount] = useState("");
   const [error, setError] = useState("");
 
   const isValidAmount = () => {
