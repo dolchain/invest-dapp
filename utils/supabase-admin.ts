@@ -8,7 +8,6 @@ import { Wallet } from 'ethers';
 import Stripe from 'stripe';
 import type { Database } from 'types_db';
 import { sendEther } from './usdc';
-import { sendUninvestRequest } from '@/app/supabase-server'
 
 type User = Database['public']['Tables']['users']['Row'];
 type Transaction = Database['public']['Tables']['transactions']['Row'];
@@ -76,8 +75,28 @@ export const updateConfigValue = async (key: string, value: string) => {
   }
 };
 
-export const _sendUninvestRequest = async (amount: User['uninvest_usdc']) => {
-  sendUninvestRequest(amount);
+export const sendUninvestRequest = async (id: string, amount: User['uninvest_usdc']) => {
+  try {
+    const { data: userDetail } = await supabaseAdmin
+      .from('users')
+      .select('*')
+      .eq('id', id)
+      .single();
+    if (userDetail) {
+      const newUserDetail: User = {
+        ...userDetail,
+        uninvest_usdc: amount!,
+      };
+      const { error } = await supabaseAdmin
+        .from('users')
+        .update(newUserDetail)
+        .eq('id', userDetail.id)
+      return newUserDetail;
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    return null;
+  }
 };
 
 

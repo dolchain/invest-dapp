@@ -29,14 +29,15 @@ const Invest = ({ userDetail }: InvestProps) => {
       await toast.promise(
         _investUSDC(userDetail.id!, amount),
         {
-          pending: 'Transaction is pending',
-          success: 'Transaction is confirmed 👌',
-          error: 'Transaction rejected 🤯'
+          pending: `Investing ${amount}...`,
+          success: 'Invested successfully 👌',
+          error: 'Investing rejected 🤯'
         }
       );
     } catch (err) {
       console.log("ERROR", err);
     }
+    setAmount("");
   };
 
   return (

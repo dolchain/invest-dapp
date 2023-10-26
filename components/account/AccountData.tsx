@@ -1,8 +1,6 @@
-"use client"
 import type { Database } from 'types_db';
 import CopyableAddress from '@/components/CopyableAddress';
-import { useEffect, useState } from 'react'
-import supabase from '@/utils/supabase'
+import QRCode from "react-qr-code";
 
 interface AccountDataProps {
   userDetail: any;//Database['public']['Tables']['users']['Row']
@@ -11,42 +9,41 @@ interface AccountDataProps {
 const AccountData = ({ userDetail }: AccountDataProps) => {
 
   return (
-    <div className="flex flex-col bg-white py-8 px-4 shadow sm:px-10">
-      <div className="flex flex-col sm:flex-row flex-grow">
-        <div className="mb-2 flex-grow max-w-md">
-          <label className="block text-sm font-medium text-gray-700">Email</label>
-          <div className="mt-1">
-            <span className="text-md text-gray-900">{userDetail.email}</span>
-          </div>
-        </div>
-        <div className="mb-2 flex-grow">
+    <div className='flex flex-col bg-white py-8 px-4 shadow sm:px-10 items-center justify-center space-y-2'>
+      <div className="flex flex-col sm:flex-row sm:space-x-4">
+        <label className="block text-sm font-medium text-gray-700">Email:</label>
+        <div className="text-md text-gray-900">{userDetail.email}</div>
+      </div>
+      <div className="flex flex-col sm:flex-row space-y-2 sm:space-x-12">
+        <div>
           <label className="block text-sm font-medium text-gray-700">Account Wallet Address</label>
-          <div className="mt-1">
+          <div className='space-y-2'>
             <CopyableAddress address={userDetail.eth_address!} />
+            <div className="flex w-full h-auto max-w-[168px]">
+              <QRCode
+                size={256}
+                style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                value={userDetail.eth_address!}
+                viewBox={`0 0 256 256`}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="space-y-2">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Account wallet Balance</label>
+            <div className="text-md text-gray-900">{userDetail.account_usdc}</div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Invested Balance</label>
+            <div className="text-md text-gray-900">{userDetail.invested_usdc}</div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Un-invest Requested</label>
+            <div className="text-md text-gray-900">{userDetail.uninvest_usdc}</div>
           </div>
         </div>
       </div>
-      <div className="flex flex-col sm:flex-row flex-grow">
-        <div className="mb-2 flex-grow">
-          <label className="block text-sm font-medium text-gray-700">Account wallet Balance</label>
-          <div className="mt-1">
-            <span className="text-md text-gray-900">{userDetail.account_usdc}</span>
-          </div>
-        </div>
-        <div className="mb-2 flex-grow">
-          <label className="block text-sm font-medium text-gray-700">Invested Balance</label>
-          <div className="mt-1">
-            <span className="text-md text-gray-900">{userDetail.invested_usdc}</span>
-          </div>
-        </div>
-        <div className="mb-2 flex-grow">
-          <label className="block text-sm font-medium text-gray-700">Un-invest Requested</label>
-          <div className="mt-1">
-            <span className="text-md text-gray-900">{userDetail.uninvest_usdc}</span>
-          </div>
-        </div>
-      </div>
-
     </div>
   );
 }
