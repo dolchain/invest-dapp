@@ -36,19 +36,13 @@ const UnInvest = ({ userDetail }: Props) => {
     await toast.promise(
       _sendUninvestRequest(parseFloat(amount) - txFee),
       {
-        pending: 'Submiting request',
+        pending: `Submiting request for ${amount}...`,
         success: 'Submited successfully 👌',
         error: 'Submit rejected 🤯'
       }
     );
+    setAmount("");
   };
-  // const requestUSDC = async (formData: FormData) => {
-  //   'use server';
-  //   const amount = formData.get('amount') as string;
-  //   const id = formData.get('id') as string;
-  //   sendUninvestRequest(id, parseFloat(amount));
-  // };
-
 
   return (
 

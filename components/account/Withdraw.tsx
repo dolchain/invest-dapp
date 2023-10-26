@@ -60,14 +60,15 @@ const Withdraw = ({ userDetail }: WithdrawProps) => {
       await toast.promise(
         sendUSDC(userDetail.id!, address, (parseFloat(amount) - txFee).toString()),
         {
-          pending: 'Transaction is pending',
-          success: 'Transaction is confirmed 👌',
-          error: 'Transaction rejected 🤯'
+          pending: `Withdrawing ${amount}...`,
+          success: 'Withdrawed successfully 👌',
+          error: 'Withdrawing rejected 🤯'
         }
       );
     } catch (err) {
       console.log("ERROR", err);
     }
+    setAmount("");
   };
 
   return (
