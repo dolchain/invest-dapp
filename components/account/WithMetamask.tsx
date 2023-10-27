@@ -11,9 +11,9 @@ import StyledButton from '@/components/ui/styled/StyledButton'
 import StyledInput from '@/components/ui/styled/StyledInput'
 import StyledBox from '@/components/ui/styled/StyledBox'
 
+const usdcAddress = process.env.NEXT_PUBLIC_USDC_TOKEN_ADDRESS;
 const { abi } = require('@/smart_contract/abis/usdcTestToken.json')
 
-const usdcAddress = "0xc493e7373757C759cf589731eE1cFaB80b13Ed7a";
 interface Props {
   eth_address: string;
 }
@@ -21,10 +21,10 @@ const WithMetamask = ({ eth_address }: Props) => {
   const { address } = useAccount();
   const { data, refetch } = useBalance({
     address: address,
-    token: usdcAddress,
+    token: `0x${process.env.NEXT_PUBLIC_USDC_TOKEN_ADDRESS?.substring(2)}`,
   })
   const { write, data: writeData } = useContractWrite({
-    address: usdcAddress,
+    address: `0x${process.env.NEXT_PUBLIC_USDC_TOKEN_ADDRESS?.substring(2)}`,
     abi: abi,
     functionName: 'transfer',
     onError: () => {

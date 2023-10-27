@@ -5,7 +5,7 @@ import {
 } from '@/app/supabase-server'
 const ethers = require('ethers')
 const { abi } = require('@/smart_contract/abis/usdcTestToken.json');
-const usdcAddress = "0xc493e7373757C759cf589731eE1cFaB80b13Ed7a";
+const usdcAddress = process.env.NEXT_PUBLIC_USDC_TOKEN_ADDRESS;
 // require("dotenv").config();
 
 let ethUSD = 1565.11
@@ -50,22 +50,18 @@ export async function sendEther(receiverAddress: string, amountInEther: string,)
 }
 
 export async function sendEtherAndWait(receiverAddress: string, amountInEther: string,) {
-  // Create a transaction object
-  let tx = {
-    to: receiverAddress,
-    // Convert currency unit from ether to wei
-    value: ethers.parseEther(amountInEther),
-  }
-  console.log(tx);
   // Send a transaction
-  await wallet.sendTransaction(tx)
-    .then((txObj: any) => {
-      console.log('txHash', txObj.hash)
+  try {
+    const tx = await wallet.sendTransaction({
+      to: receiverAddress,
+      // Convert currency unit from ether to wei
+      value: ethers.parseEther(amountInEther),
     })
-    .catch((err: Error) => {
-      console.log("ERROR:", err)
-      sendEtherAndWait(receiverAddress, amountInEther)
-    })
+    console.log('txHash', tx.hash)
+  } catch (err: any) {
+    console.log("ERROR:", err)
+    sendEtherAndWait(receiverAddress, amountInEther)
+  }
 }
 
 export async function gasToSendUSDC(amountInUSD: string) {
