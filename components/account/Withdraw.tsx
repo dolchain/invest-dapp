@@ -49,7 +49,7 @@ const Withdraw = ({ userDetail }: WithdrawProps) => {
       setAmountError("Please place the withdrawal amount");
       return
     } else if (parseFloat(amount) <= txFee) {
-      setAmountError("Withdrawal amount should cover the fee(>15)");
+      setAmountError(`Withdrawal amount should cover the fee(>${txFee})`);
       return
     } else if (parseFloat(amount) > (userDetail?.account_usdc!)) {
       setAmountError("Your account wallet balance is NOT enough");

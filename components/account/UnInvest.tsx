@@ -27,7 +27,7 @@ const UnInvest = ({ userDetail }: Props) => {
       setError("Please place the un-invest amount");
       return
     } else if (parseFloat(amount) <= txFee) {
-      setError("Un-invest amount should cover the fee(>15)");
+      setError(`Un-invest amount should cover the fee(>${txFee})`);
       return
     } else if (parseFloat(amount) > (userDetail?.invested_usdc!)) {
       setError("Your invested balance is NOT enough");
