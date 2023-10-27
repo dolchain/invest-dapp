@@ -16,6 +16,9 @@ export default function AuthUI() {
         magicLink={true}
         appearance={{
           theme: ThemeSupa,
+          style: {
+            input: { color: 'white' }
+          },
           variables: {
             default: {
               colors: {
