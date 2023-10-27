@@ -41,10 +41,11 @@ const Invest = ({ userDetail }: InvestProps) => {
         });
       } else {
         toast.update(toastId!, {
-          render: "Investment rejected 🤯", type: 'success',
+          render: "Investment rejected 🤯", type: 'error',
           isLoading: false, autoClose: 5000
         });
       }
+      console.log(err)
     }
     setAmount("");
   };
