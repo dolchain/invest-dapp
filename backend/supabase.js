@@ -7,6 +7,7 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 );
 
+const txFee = parseFloat(process.env.TX_FEE)
 
 const Transfered = async (txHash, from, to, amount) => {
   if (from == null || to == null || amount == null) return;
@@ -33,8 +34,8 @@ const Transfered = async (txHash, from, to, amount) => {
       const newUserDetail = {
         ...userDetail,
         account_usdc: userDetail?.account_usdc + amount,
-        invested_usdc: userDetail?.invested_usdc - (action == 'deposit' ? 0 : amount + 15),
-        uninvest_usdc: action == 'deposit' ? userDetail.uninvest_usdc : 0,
+        invested_usdc: userDetail?.invested_usdc - (action == 'deposit' ? 0 : amount + txFee),
+        uninvest_usdc: userDetail.uninvest_usdc - (action == 'deposit' ? 0 : amount),
       };
       const {error} = await supabaseAdmin
         .from('users')
@@ -60,7 +61,7 @@ const Transfered = async (txHash, from, to, amount) => {
 
       const profileData = {
         ...userDetail,
-        account_usdc: userDetail?.account_usdc - amount - (action == 'withdraw' ? 15 : 0),
+        account_usdc: userDetail?.account_usdc - amount - (action == 'withdraw' ? txFee : 0),
         invested_usdc: userDetail?.invested_usdc + (action == 'invest' ? amount : 0),
       };
       const {error} = await supabaseAdmin

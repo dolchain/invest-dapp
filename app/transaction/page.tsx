@@ -26,6 +26,8 @@ export default async function Account() {
   const [eth_address] = user ? await Promise.all([getAddressFromId()]) : [];
   const [transactions] = user ? await Promise.all([getTransactions(eth_address || null)]) : [];
 
+  const txFee = parseFloat(process.env.NEXT_PUBLIC_TX_FEE || "15")
+
   const actionColors: Record<string, string> = {
     'deposit': "text-green-500",
     'withdraw': "text-yellow-500",
@@ -71,7 +73,7 @@ export default async function Account() {
                 <td className="border px-4 py-2"><CopyableAddress address={transaction.to!} /></td>
                 <td className={cn('border', 'px-4', 'py-2', actionColors[transaction.action!])}>
                   {transaction.action}</td>
-                <td className="border px-4 py-2 text-white-400">{transaction.amount}{(transaction.action == 'uninvest' || transaction.action == 'withdraw') ? ' (+15)' : ''}</td>
+                <td className="border px-4 py-2 text-white-400">{transaction.amount}{(transaction.action == 'uninvest' || transaction.action == 'withdraw') ? ` (+${txFee})` : ''}</td>
                 <td className="border px-4 py-2 text-white-400">{transaction.timestamp}</td>
                 {/* <td className="border px-4 py-2 text-white-400">{transaction.timestamp}</td> */}
               </tr>
