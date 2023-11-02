@@ -15,8 +15,10 @@ const Transfered = async (txHash, from, to, amount) => {
   const { data: centralWallet } = await supabaseAdmin
   .from('config')
   .select('value')
-  .eq('key', "central_wallet")
+  .ilike('key', "central_wallet")
   .single();
+
+  const centralWalletAddress = centralWallet.value.toLowerCase();
 
   let action = null;
 
@@ -25,11 +27,11 @@ const Transfered = async (txHash, from, to, amount) => {
     const { data: userDetail } = await supabaseAdmin
       .from('users')
       .select('*')
-      .eq('eth_address', to)
+      .ilike('eth_address', to)
       .single();
     if(userDetail != null && userDetail != undefined){  
       action = 'deposit'
-      if(from == centralWallet.value)
+      if(from == centralWalletAddress)
         action = 'uninvest'
       const newUserDetail = {
         ...userDetail,
@@ -51,12 +53,12 @@ const Transfered = async (txHash, from, to, amount) => {
   const { data: userDetail } = await supabaseAdmin
     .from('users')
     .select('*')
-    .eq('eth_address', from)
+    .ilike('eth_address', from)
     .single();
     if(userDetail != null && userDetail != undefined){
       action = 'withdraw'
       // If receiver address is central wallet (invest)
-      if(to == centralWallet.value)
+      if(to == centralWalletAddress)
         action = 'invest'
 
       const profileData = {

@@ -34,7 +34,7 @@ const UnInvest = ({ userDetail }: Props) => {
       return
     }
     await toast.promise(
-      sendUninvestRequest(userDetail.id, parseFloat(amount) - txFee),
+      sendUninvestRequest(userDetail, parseFloat(amount) - txFee),
       {
         pending: `Submiting request for ${amount}...`,
         success: 'Submited successfully 👌',
