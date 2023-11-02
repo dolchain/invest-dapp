@@ -19,14 +19,14 @@ const AccountData = ({ userDetail }: AccountDataProps) => {
           <label className="block text-sm font-medium text-gray-700">Account Wallet Address</label>
           <div className='space-y-2'>
             <CopyableAddress address={userDetail.eth_address!} />
-            <div className="flex w-full h-auto max-w-[168px]">
+            {userDetail.eth_address && <div className="flex w-full h-auto max-w-[168px]">
               <QRCode
                 size={256}
                 style={{ height: "auto", maxWidth: "100%", width: "100%" }}
                 value={userDetail.eth_address!}
                 viewBox={`0 0 256 256`}
               />
-            </div>
+            </div>}
           </div>
         </div>
         <div className="space-y-2">

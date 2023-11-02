@@ -45,6 +45,7 @@ export async function getUserDetails() {
       .from('users')
       .select('*')
       .single();
+    console.log("userDetail", userDetail);
     // if there is no eth address on record, generate it and save
     if (userDetail?.eth_address === null) {
       var id = randomBytes(32).toString('hex');
@@ -117,6 +118,5 @@ export const getPrivateFromId = async () => {
     return null;
   }
 };
-
 
 export default supabase;

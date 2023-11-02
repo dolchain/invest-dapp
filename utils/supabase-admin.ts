@@ -10,46 +10,35 @@ import type { Database } from 'types_db';
 import { sendEther } from './usdc';
 
 type User = Database['public']['Tables']['users']['Row'];
+type Balance = Database['public']['Tables']['balances']['Row'];
 type Transaction = Database['public']['Tables']['transactions']['Row'];
 
-// Note: supabaseAdmin uses the SERVICE_ROLE_KEY which you must only use in a secure server-side context
-// as it has admin privileges and overwrites RLS policies!
-const supabaseAdmin = createClient<Database>(
+const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || '',
   process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 );
 
-export const plusInterestToUser = async (id: string, invested: number) => {
+// Note: supabaseAdmin uses the SERVICE_ROLE_KEY which you must only use in a secure server-side context
+// as it has admin privileges and overwrites RLS policies!
+export const plusInterestToUser = async (userDetail: User, invested: number) => {
   try {
-    const { data: userDetail } = await supabaseAdmin
-      .from('users')
-      .select('*')
-      .eq('id', id)
-      .single()
     if (userDetail) {
       const newUserDetail: User = {
         ...userDetail,
-        invested_usdc: invested
+        invested_usdc: invested!
       };
-      console.log(newUserDetail);
-      const { data, error } = await supabaseAdmin
+      const { error } = await supabaseAdmin
         .from('users')
         .update(newUserDetail)
-        .eq('id', id)
-        .select()
-        .single()
-      console.log(data);
+        .eq('id', userDetail.id)
       if (error) {
         console.log(error);
         throw error;
       }
-
-      return newUserDetail;
     }
-    return userDetail;
   } catch (error) {
     console.error('Error:', error);
-    return null;
+    throw error;
   }
 };
 
@@ -75,13 +64,13 @@ export const updateConfigValue = async (key: string, value: string) => {
   }
 };
 
-export const sendUninvestRequest = async (id: string, amount: User['uninvest_usdc']) => {
+export const sendUninvestRequest = async (userDetail: User, amount: User['uninvest_usdc']) => {
   try {
-    const { data: userDetail } = await supabaseAdmin
-      .from('users')
-      .select('*')
-      .eq('id', id)
-      .single();
+    // const { data: userDetail } = await supabaseAdmin
+    //   .from('users')
+    //   .select()
+    //   .eq('id', id)
+    //   .single()
     if (userDetail) {
       const newUserDetail: User = {
         ...userDetail,
@@ -91,11 +80,10 @@ export const sendUninvestRequest = async (id: string, amount: User['uninvest_usd
         .from('users')
         .update(newUserDetail)
         .eq('id', userDetail.id)
-      return newUserDetail;
     }
   } catch (error) {
     console.error('Error:', error);
-    return null;
+    throw error
   }
 };
 

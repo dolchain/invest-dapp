@@ -88,7 +88,7 @@ const Users = ({ users, centralWalletAddress, percentage }: UsersProps) => {
   const plusInterest = async (singleUser: any) => {
     console.log(singleUser);
     await toast.promise(
-      plusInterestToUser(singleUser?.id!, singleUser?.invested_usdc * (1 + percent / 100)),
+      plusInterestToUser(singleUser, singleUser?.invested_usdc * (1 + percent / 100)),
       {
         pending: 'Saving invested amount',
         success: 'Saved successfully 👌',
