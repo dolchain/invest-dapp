@@ -8,14 +8,16 @@ import { Wallet } from 'ethers';
 import Stripe from 'stripe';
 import type { Database } from 'types_db';
 import { sendEther } from './usdc';
+import sgMail from '@sendgrid/mail';
+sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
 
 type User = Database['public']['Tables']['users']['Row'];
 type Balance = Database['public']['Tables']['balances']['Row'];
 type Transaction = Database['public']['Tables']['transactions']['Row'];
 
 const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
 // Note: supabaseAdmin uses the SERVICE_ROLE_KEY which you must only use in a secure server-side context
@@ -80,6 +82,31 @@ export const sendUninvestRequest = async (userDetail: User, amount: User['uninve
         .from('users')
         .update(newUserDetail)
         .eq('id', userDetail.id)
+      if (!error) {
+        const { data: adminEmails } = await supabaseAdmin
+          .from('users')
+          .select('email')
+          .eq('role', 'admin')
+        adminEmails?.map(adminEmail => {
+          const msg = {
+            to: adminEmail.email, // Change to your recipient
+            from: 'info@mic-software.net', // Change to your verified sender
+            subject: `${userDetail.email} made Un-invest Request`,
+            text: `Could you please confirm the request to send to the address ${userDetail.eth_address} for a quantity of ${amount}?`,
+            html: `Could you please confirm the request to send to the address ${userDetail.eth_address} for a quantity of ${amount}?`
+          };
+          sgMail
+            .send(msg)
+            .then(() => {
+              console.log(`Email sent to ${adminEmail.email}`);
+            })
+            .catch((error: Error) => {
+              console.error(error);
+            });
+        })
+
+
+      }
     }
   } catch (error) {
     console.error('Error:', error);
