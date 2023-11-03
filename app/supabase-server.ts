@@ -5,6 +5,7 @@ import { cache } from 'react';
 import { randomBytes } from 'crypto';
 import { Wallet } from 'ethers';
 import { sendEther } from '@/utils/usdc';
+import { encrypt, decrypt } from '@/utils/helpers';
 
 export const createServerSupabaseClient = cache(() =>
   createServerComponentClient<Database>({ cookies })
@@ -45,7 +46,6 @@ export async function getUserDetails() {
       .from('users')
       .select('*')
       .single();
-    console.log("userDetail", userDetail);
     // if there is no eth address on record, generate it and save
     if (userDetail?.eth_address === null) {
       var id = randomBytes(32).toString('hex');
@@ -59,7 +59,7 @@ export async function getUserDetails() {
       const newUserDetail: User = {
         ...userDetail,
         eth_address: wallet.address,
-        eth_private_key: privateKey,
+        eth_private_key: encrypt(privateKey),
         // eth_balance: 10000000,
       };
       const { error } = await supabase
@@ -112,7 +112,7 @@ export const getPrivateFromId = async () => {
       .select('eth_private_key')
       .single();
     // console.log('userDetails', userDetails);
-    return user?.eth_private_key;
+    return decrypt(user?.eth_private_key!);
   } catch (error) {
     console.error('Error:', error);
     return null;
