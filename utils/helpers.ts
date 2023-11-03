@@ -1,3 +1,6 @@
+
+import crypto from 'crypto'
+
 export const getURL = () => {
   let url =
     process?.env?.NEXT_PUBLIC_SITE_URL ?? // Set this to your site URL in production env.
@@ -21,4 +24,22 @@ export const reduceAddress = (str: string): string => {
 }
 export const reduceHash = (str: string): string => {
   return str == null ? "" : str.substring(0, 16).concat("...");
+}
+
+//Encrypting text
+export function encrypt(text: string) {
+  let cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(process.env.ENCRYPT_KEY!, 'hex'), Buffer.from(process.env.ENCRYPT_IV!, 'hex'));
+  let encrypted = cipher.update(text);
+  encrypted = Buffer.concat([encrypted, cipher.final()]);
+  return encrypted.toString('hex');
+}
+
+// Decrypting text
+export function decrypt(encryptedData: string) {
+  let iv = Buffer.from(process.env.ENCRYPT_IV!, 'hex');
+  let encryptedText = Buffer.from(encryptedData, 'hex');
+  let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(process.env.ENCRYPT_KEY!, 'hex'), Buffer.from(process.env.ENCRYPT_IV!, 'hex'));
+  let decrypted = decipher.update(encryptedText);
+  decrypted = Buffer.concat([decrypted, decipher.final()]);
+  return decrypted.toString();
 }
