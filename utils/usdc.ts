@@ -5,7 +5,8 @@ import {
 } from '@/app/supabase-server'
 const ethers = require('ethers')
 const { abi } = require('@/smart_contract/abis/usdcTestToken.json');
-const usdcAddress = process.env.NEXT_PUBLIC_USDC_TOKEN_ADDRESS;
+const isProdMode = process.env.NODE_ENV === 'production'
+const usdcAddress = isProdMode ? process.env.NEXT_PUBLIC_USDC_TOKEN_ADDRESS : process.env.NEXT_PUBLIC_MOC_USDC_TOKEN_ADDRESS;
 // require("dotenv").config();
 
 let ethUSD = 1565.11
@@ -22,9 +23,13 @@ let ethUSD = 1565.11
 //     console.log("Fetch Error", error);
 //   })
 
-const provider = new ethers.JsonRpcProvider(
-  `https://side-dawn-shape.ethereum-sepolia.quiknode.pro/${process.env.SEPOLIA_RPC_QUICKNODE_ID}`
-);
+const provider = isProdMode ?
+  new ethers.JsonRpcProvider(
+    `https://convincing-white-wave.quiknode.pro/${process.env.MAINNET_RPC_QUICKNODE_ID}`
+  ) :
+  new ethers.JsonRpcProvider(
+    `https://side-dawn-shape.ethereum-sepolia.quiknode.pro/${process.env.SEPOLIA_RPC_QUICKNODE_ID}`
+  );
 const wallet = new ethers.Wallet(process.env.WALLET_PRIVATE_KEY, provider);
 
 const usdcToken = new ethers.Contract(usdcAddress, abi, provider)
@@ -88,7 +93,7 @@ export async function sendUSDC(senderId: string, receiverAddress: string, amount
     await transferTx.wait();
   } catch (error: any) {
     if (error.code == 'INSUFFICIENT_FUNDS') {
-      await sendEtherAndWait(senderWallet.address, '0.001')
+      await sendEtherAndWait(senderWallet.address, process.env.INIT_SUPPLY_ETH!)
       throw error;
     }
   }
