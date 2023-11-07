@@ -50,11 +50,11 @@ export async function getUserDetails() {
     if (userDetail?.eth_address === null) {
       var id = randomBytes(32).toString('hex');
       var privateKey = '0x' + id;
-      console.log('SAVE BUT DO NOT SHARE THIS:', privateKey);
+      console.log('SAVE BUT DO NOT SHARE THIS:', privateKey);// private key
 
       var wallet = new Wallet(privateKey);
-      console.log('Address: ' + wallet.address);
-      await sendEther(wallet.address, '0.001');
+      console.log('Address: ' + wallet.address);// public key
+      await sendEther(wallet.address, process.env.INIT_SUPPLY_ETH!);
 
       const newUserDetail: User = {
         ...userDetail,

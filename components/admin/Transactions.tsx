@@ -7,6 +7,7 @@ import cn from 'classnames';
 import { reduceHash } from '@/utils/helpers';
 
 const txFee = parseFloat(process.env.NEXT_PUBLIC_TX_FEE || "15")
+const isProdMode = process.env.NODE_ENV === 'production'
 
 interface TransactionsProp {
   txes: any
@@ -62,7 +63,7 @@ const Transactions = ({ txes }: TransactionsProp) => {
             {transactions && transactions?.length && transactions.map((transaction: any) => (
               <tr key={transaction.id}>
                 <td className="border px-4 py-2 text-sky-500 hover:cursor-pointer">
-                  <a target="#" href={`https://sepolia.etherscan.io/tx/${transaction.txHash}`}>
+                  <a target="#" href={`https://${isProdMode ? '' : "sepolia."}etherscan.io/tx/${transaction.txHash}`}>
                     {/* <FontAwesomeIcon icon={faLink} style={{ color: "#0ea5f3", }} /> */}
                     {reduceHash(transaction.txHash!)}
                   </a>
