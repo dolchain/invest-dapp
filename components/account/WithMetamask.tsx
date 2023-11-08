@@ -90,8 +90,8 @@ const WithMetamask = ({ eth_address }: Props) => {
       <div className="flex flex-row w-full justify-center">
         <Web3Button />
         {data != null && (
-          <div className="block text-sm font-medium text-gray-700 py-3 ml-4">
-            {ethers.formatUnits(data?.value, 6)}
+          <div className="block text-md font-medium text-gray-700 py-3 ml-4">
+            {ethers.formatUnits(data?.value, 6)} <b className="text-sm">USDC</b>
           </div>
         )}
       </div>
