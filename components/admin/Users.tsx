@@ -1,78 +1,96 @@
-"use client"
-import type { Database } from 'types_db';
-import CopyableAddress from '@/components/CopyableAddress';
-import { useEffect, useState } from 'react'
-import supabase from '@/utils/supabase'
-import cn from 'classnames';
-import StyledButton from '@/components/ui/styled/StyledButton';
-import { toast, ToastContainer } from 'react-toastify'
+'use client';
+
 import StyledInput from '../ui/styled/StyledInput';
+import CopyableAddress from '@/components/CopyableAddress';
+import StyledButton from '@/components/ui/styled/StyledButton';
+import supabase from '@/utils/supabase';
 import { updateConfigValue, plusInterestToUser } from '@/utils/supabase-admin';
+import cn from 'classnames';
+import { useEffect, useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import type { Database } from 'types_db';
 
 interface UsersProps {
-  users: any//Database['public']['Tables']['users']['Row']
-  centralWalletAddress: string
-  percentage: number
+  users: any; //Database['public']['Tables']['users']['Row']
+  centralWalletAddress: string;
+  percentage: number;
 }
 
 const Users = ({ users, centralWalletAddress, percentage }: UsersProps) => {
   const [allUsers, setAllUsers] = useState(users);
-  const totalInvested = allUsers?.map((singleUser: any) => singleUser.invested_usdc).reduce((accumulator: any, currentValue: any) => (accumulator!) + (currentValue!), 0);
+  const totalInvested = allUsers
+    ?.map((singleUser: any) => singleUser.invested_usdc)
+    .reduce(
+      (accumulator: any, currentValue: any) => accumulator! + currentValue!,
+      0
+    );
 
-  const [addressError, setAddressError] = useState("");
+  const [addressError, setAddressError] = useState('');
   const [address, setAddress] = useState(centralWalletAddress);
-  const [percentError, setPercentError] = useState("");
+  const [percentError, setPercentError] = useState('');
   const [percent, setPercent] = useState(percentage);
   const isValidEthereumAddress = () => {
     const ethAddressRegex = /^0x[0-9a-fA-F]{40}$/;
-    return ethAddressRegex.test(address);// && address != userDetail.eth_address;
-  }
+    return ethAddressRegex.test(address); // && address != userDetail.eth_address;
+  };
   // useEffect(() => {
   //   setAllUsers(users);
   // }, [users]);
 
   useEffect(() => {
-    let uninvests: any = {}
+    let uninvests: any = {};
     const channel = supabase
       .channel('*')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'balances' }, (payload) => {
-        if (payload.eventType == 'UPDATE') {
-          if (payload.new.uninvest_usdc > 0 && uninvests[payload.new.id] != payload.new.uninvest_usdc) {
-            toast.info(`Un-invest request: ${payload.new.email} - ${payload.new.uninvest_usdc}`);
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'balances' },
+        (payload) => {
+          if (payload.eventType == 'UPDATE') {
+            if (
+              payload.new.uninvest_usdc > 0 &&
+              uninvests[payload.new.id] != payload.new.uninvest_usdc
+            ) {
+              toast.info(
+                `Un-invest request: ${payload.new.email} - ${payload.new.uninvest_usdc}`
+              );
+            }
+            uninvests[payload.new.id] = payload.new.uninvest_usdc;
+            setAllUsers((allUsers: any) =>
+              allUsers.map((user: any) =>
+                user.id == payload.new.id ? payload.new : user
+              )
+            );
+          } else if (payload.eventType == 'INSERT') {
+            setAllUsers((allUsers: any) => [...allUsers, payload.new]);
+          } else if (payload.eventType == 'DELETE') {
+            setAllUsers((allUsers: any) =>
+              allUsers.filter((user: any) => user.id != payload.old.id)
+            );
           }
-          uninvests[payload.new.id] = payload.new.uninvest_usdc;
-          setAllUsers((allUsers: any) => allUsers.map((user: any) => user.id == payload.new.id ? payload.new : user))
-        } else if (payload.eventType == 'INSERT') {
-          setAllUsers((allUsers: any) => [...allUsers, payload.new])
-        } else if (payload.eventType == 'DELETE') {
-          setAllUsers((allUsers: any) => allUsers.filter((user: any) => user.id != payload.old.id))
         }
-      })
-      .subscribe()
+      )
+      .subscribe();
 
     return () => {
-      supabase.removeChannel(channel)
-    }
-  }, [users])
+      supabase.removeChannel(channel);
+    };
+  }, [users]);
 
   const updateCentralWalletAddress = async () => {
     if (!isValidEthereumAddress()) {
-      setAddressError("Adress Format is not correct")
+      setAddressError('Adress Format is not correct');
       return;
     }
-    await toast.promise(
-      updateConfigValue('central_wallet', address),
-      {
-        pending: 'Updating Invest Wallet Address',
-        success: 'Updated successfully 👌',
-        error: 'Updating rejected 🤯'
-      }
-    );
-  }
+    await toast.promise(updateConfigValue('central_wallet', address), {
+      pending: 'Updating Invest Wallet Address',
+      success: 'Updated successfully 👌',
+      error: 'Updating rejected 🤯'
+    });
+  };
 
   const updateInterestPercentage = async () => {
     if (percent < 0) {
-      setAddressError("Percentage is not correct")
+      setAddressError('Percentage is not correct');
       return;
     }
     await toast.promise(
@@ -83,19 +101,22 @@ const Users = ({ users, centralWalletAddress, percentage }: UsersProps) => {
         error: 'Updating rejected 🤯'
       }
     );
-  }
+  };
 
   const plusInterest = async (singleUser: any) => {
     console.log(singleUser);
     await toast.promise(
-      plusInterestToUser(singleUser, singleUser?.invested_usdc * (1 + percent / 100)),
+      plusInterestToUser(
+        singleUser,
+        singleUser?.invested_usdc * (1 + percent / 100)
+      ),
       {
         pending: 'Saving invested amount',
         success: 'Saved successfully 👌',
         error: 'Saving rejected 🤯'
       }
     );
-  }
+  };
 
   return (
     <section className="mb-32 bg-black">
@@ -108,18 +129,39 @@ const Users = ({ users, centralWalletAddress, percentage }: UsersProps) => {
             <div className="flex flex-col">
               <div className="flex flex-row bg-white min-w-[24em] px-4 py-2 space-x-4">
                 {/* <div className='flex flex-grow w-full'> */}
-                <StyledInput label="Invest Address" value={address} setValue={setAddress} error={addressError} setError={setAddressError} />
+                <StyledInput
+                  label="Invest Address"
+                  value={address}
+                  setValue={setAddress}
+                  error={addressError}
+                  setError={setAddressError}
+                />
                 {/* </div> */}
-                <StyledButton text="Update" onClickHandler={updateCentralWalletAddress} />
+                <StyledButton
+                  text="Update"
+                  onClickHandler={updateCentralWalletAddress}
+                />
               </div>
               <div className="flex flex-row bg-white min-w-[24em] px-4 py-2 space-x-4">
                 {/* <div className='flex flex-grow w-full'> */}
-                <StyledInput label="Interest Percentage" value={percent} setValue={setPercent} error={percentError} setError={setPercentError} />
+                <StyledInput
+                  label="Interest Percentage"
+                  value={percent}
+                  setValue={setPercent}
+                  error={percentError}
+                  setError={setPercentError}
+                />
                 {/* </div> */}
-                <StyledButton text="Update" onClickHandler={updateInterestPercentage} />
+                <StyledButton
+                  text="Update"
+                  onClickHandler={updateInterestPercentage}
+                />
               </div>
             </div>
-            <div className="flex text-lg text-zinc-200 sm:text-center sm:text-2xl items-center">Total invested: <b>{totalInvested}</b></div>
+            <div className="block text-lg text-zinc-200 sm:text-center sm:text-2xl items-center">
+              Total invested: <b>{totalInvested}</b>{' '}
+              <b className="text-md sm:text-lg"> USDC</b>
+            </div>
           </div>
         </div>
       </div>
@@ -135,23 +177,43 @@ const Users = ({ users, centralWalletAddress, percentage }: UsersProps) => {
             </tr>
           </thead>
           <tbody>
-            {allUsers && allUsers?.length && allUsers.map((singleUser: any) => (
-              <tr key={singleUser.id} className={cn('border', 'px-4', 'py-2', singleUser.uninvest_usdc == 0 ? "text-white-400" : "bg-yellow-100 text-gray-900")}>
-                <td className="px-4 py-2 ">{singleUser.email}</td>
-                <td className="px-4 py-2"><CopyableAddress address={singleUser.eth_address!} /></td>
-                <td className="px-4 py-2">{singleUser.account_usdc}</td>
-                <td className="flex flex-row px-4 py-2 place-content-between">
-                  <div className="py-2">{singleUser.invested_usdc}</div>
-                  {singleUser.invested_usdc > 0 && <StyledButton text="+ interest" onClickHandler={plusInterest} clickParam={singleUser} />}
-                </td>
-                <td className="px-4 py-2">{singleUser.uninvest_usdc}</td>
-              </tr>
-            ))}
+            {allUsers &&
+              allUsers?.length &&
+              allUsers.map((singleUser: any) => (
+                <tr
+                  key={singleUser.id}
+                  className={cn(
+                    'border',
+                    'px-4',
+                    'py-2',
+                    singleUser.uninvest_usdc == 0
+                      ? 'text-white-400'
+                      : 'bg-yellow-100 text-gray-900'
+                  )}
+                >
+                  <td className="px-4 py-2 ">{singleUser.email}</td>
+                  <td className="px-4 py-2">
+                    <CopyableAddress address={singleUser.eth_address!} />
+                  </td>
+                  <td className="px-4 py-2">{singleUser.account_usdc}</td>
+                  <td className="flex flex-row px-4 py-2 place-content-between">
+                    <div className="py-2">{singleUser.invested_usdc}</div>
+                    {singleUser.invested_usdc > 0 && (
+                      <StyledButton
+                        text="+ interest"
+                        onClickHandler={plusInterest}
+                        clickParam={singleUser}
+                      />
+                    )}
+                  </td>
+                  <td className="px-4 py-2">{singleUser.uninvest_usdc}</td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
-    </section >
+    </section>
   );
-}
+};
 
 export default Users;
