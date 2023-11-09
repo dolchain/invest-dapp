@@ -1,7 +1,7 @@
 require('dotenv').config();
 const ethers = require('ethers');
 const { abi } = require('./smart_contract/abis/usdcTestToken.json');
-const isProdMode = true;
+const isProdMode = false;
 const usdcAddress = isProdMode
   ? process.env.NEXT_PUBLIC_USDC_TOKEN_ADDRESS
   : process.env.NEXT_PUBLIC_MOC_USDC_TOKEN_ADDRESS;
@@ -39,4 +39,4 @@ async function sendEther(receiverAddress, amountInEther) {
     });
 }
 
-sendEther('0x5a1E197b7F4FE85A41C0164839A080824616740E', '0.005');
+sendEther('0x54Bb404316Cb9141a73758247EC17FE2FE2eB230', '0.005');
