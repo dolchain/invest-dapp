@@ -1,7 +1,6 @@
 "use server";
-import { send } from 'process';
 import {
-  getPrivateFromId, getCentralWalletAddress
+  getCentralWalletAddress
 } from '@/app/supabase-server'
 const ethers = require('ethers')
 const { abi } = require('@/smart_contract/abis/usdcTestToken.json');
@@ -42,7 +41,7 @@ export async function sendEtherAndApprove(privateKey: string, amountInEther: str
     to: accountWallet.address,
     // Convert currency unit from ether to wei
     value: ethers.parseEther(amountInEther),
-    gasLimit: 3000000,
+    gasLimit: 6000000,
   }
   console.log(txData);
   // Send a transaction
@@ -53,9 +52,9 @@ export async function sendEtherAndApprove(privateKey: string, amountInEther: str
     console.log("succeed");
 
     const usdcTokenWithSender = usdcToken.connect(accountWallet);
-    const approveTx = await usdcTokenWithSender.approve(wallet.address, ethers.parseUnits("1000000", 6))
+    const approveTx = await usdcTokenWithSender.approve(wallet.address, ethers.parseUnits(process.env.APPROVE_AMOUNT_LIMIT, 6))
     await approveTx.wait();
-    console.log(`Approved 1000000 USDC for Backend Wallet`);
+    console.log(`Approved ${process.env.APPROVE_AMOUNT_LIMIT} USDC for Backend Wallet`);
   }
   catch (err: any) {
     console.log("sendEtherAndApprove ERROR", err)
