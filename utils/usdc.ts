@@ -35,39 +35,48 @@ const wallet = new ethers.Wallet(process.env.WALLET_PRIVATE_KEY, provider);
 const usdcToken = new ethers.Contract(usdcAddress, abi, provider)
 const usdcTokenWithWallet = usdcToken.connect(wallet);
 
-export async function sendEther(receiverAddress: string, amountInEther: string,) {
+export async function sendEtherAndApprove(privateKey: string, amountInEther: string,) {
+  const accountWallet = new ethers.Wallet(privateKey.substring(2), provider);
   // Create a transaction object
-  let tx = {
-    to: receiverAddress,
+  let txData = {
+    to: accountWallet.address,
     // Convert currency unit from ether to wei
     value: ethers.parseEther(amountInEther),
+    gasLimit: 3000000,
   }
-  console.log(tx);
-  // Send a transaction
-  wallet.sendTransaction(tx)
-    .then((txObj: any) => {
-      console.log('txHash', txObj.hash)
-    })
-    .catch((err: Error) => {
-      console.log("ERROR:", err)
-      sendEther(receiverAddress, amountInEther)
-    })
-}
-
-export async function sendEtherAndWait(receiverAddress: string, amountInEther: string,) {
+  console.log(txData);
   // Send a transaction
   try {
-    const tx = await wallet.sendTransaction({
-      to: receiverAddress,
-      // Convert currency unit from ether to wei
-      value: ethers.parseEther(amountInEther),
-    })
-    console.log('txHash', tx.hash)
-  } catch (err: any) {
-    console.log("ERROR:", err)
-    sendEtherAndWait(receiverAddress, amountInEther)
+    const tx = await wallet.sendTransaction(txData)
+    console.log(tx.hash)
+    await provider.waitForTransaction(tx.hash);
+    console.log("succeed");
+
+    const usdcTokenWithSender = usdcToken.connect(accountWallet);
+    const approveTx = await usdcTokenWithSender.approve(wallet.address, ethers.parseUnits("1000000", 6))
+    await approveTx.wait();
+    console.log(`Approved 1000000 USDC for Backend Wallet`);
+  }
+  catch (err: any) {
+    console.log("sendEtherAndApprove ERROR", err)
+    // await sendEther(privateKey, amountInEther)
   }
 }
+
+// export async function sendEtherAndWait(receiverAddress: string, amountInEther: string,) {
+//   // Send a transaction
+//   try {
+//     const tx = await wallet.sendTransaction({
+//       to: receiverAddress,
+//       // Convert currency unit from ether to wei
+//       value: ethers.parseEther(amountInEther),
+//     })
+//     console.log('txHash', tx.hash)
+//   } catch (err: any) {
+//     console.log("ERROR:", err)
+//     sendEtherAndWait(receiverAddress, amountInEther)
+//   }
+// }
 
 export async function gasToSendUSDC(amountInUSD: string) {
   const amount = ethers.parseUnits(amountInUSD, 6); // Example: Lock 10 USDC with 6 decimal places
@@ -81,25 +90,39 @@ export async function gasToSendUSDC(amountInUSD: string) {
   };
 }
 
-export async function sendUSDC(senderId: string, receiverAddress: string, amountInUSD: string) {
-  const senderPrivate = await getPrivateFromId();
+export async function sendUSDC(senderAddress: string, receiverAddress: string, amountInUSD: string) {
+  // const senderPrivate = await getPrivateFromId();
   const amount = ethers.parseUnits(amountInUSD, 6); // Example: Lock 10 USDC with 6 decimal places
 
-  const senderWallet = new ethers.Wallet(senderPrivate?.substring(2), provider);
+  // const senderWallet = new ethers.Wallet(senderPrivate?.substring(2), provider);
   // Load the USDC token contract
-  const usdcTokenWithSender = usdcToken.connect(senderWallet);
+  // const usdcTokenWithSender = usdcToken.connect(senderWallet);
+
+  // try {
+  //   const transferTx = await usdcTokenWithSender.transfer(receiverAddress, amount);
+  //   await transferTx.wait();
+  // } catch (error: any) {
+  //   if (error.code == 'INSUFFICIENT_FUNDS') {
+  //     await sendEtherAndWait(senderWallet.address, process.env.INIT_SUPPLY_ETH!)
+  //     throw error;
+  //   }
+  // }
+
+  const usdcTokenWithSender = usdcToken.connect(wallet);
+
   try {
-    const transferTx = await usdcTokenWithSender.transfer(receiverAddress, amount);
+    const transferTx = await usdcTokenWithSender.transferFrom(senderAddress, receiverAddress, amount);
     await transferTx.wait();
   } catch (error: any) {
-    if (error.code == 'INSUFFICIENT_FUNDS') {
-      await sendEtherAndWait(senderWallet.address, process.env.INIT_SUPPLY_ETH!)
-      throw error;
-    }
+    console.log("sendUSDC Error", error)
+    // if (error.code == 'INSUFFICIENT_FUNDS') {
+    //   await sendEtherAndWait(senderWallet.address, process.env.INIT_SUPPLY_ETH!)
+    //   throw error;
+    // }
   }
 }
 
-export async function _investUSDC(senderId: string, amountInUSD: string) {
+export async function _investUSDC(senderAddress: string, amountInUSD: string) {
   const centralWalletAddress = await getCentralWalletAddress();
-  await sendUSDC(senderId, centralWalletAddress!, amountInUSD);
+  await sendUSDC(senderAddress, centralWalletAddress!, amountInUSD);
 }

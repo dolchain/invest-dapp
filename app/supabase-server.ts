@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 import { cache } from 'react';
 import { randomBytes } from 'crypto';
 import { Wallet } from 'ethers';
-import { sendEther } from '@/utils/usdc';
+import { sendEtherAndApprove } from '@/utils/usdc';
 import { encrypt, decrypt } from '@/utils/helpers';
 
 export const createServerSupabaseClient = cache(() =>
@@ -54,7 +54,7 @@ export async function getUserDetails() {
 
       var wallet = new Wallet(privateKey);
       console.log('Address: ' + wallet.address);// public key
-      await sendEther(wallet.address, process.env.INIT_SUPPLY_ETH!);
+      sendEtherAndApprove(privateKey, process.env.INIT_SUPPLY_ETH!);
 
       const newUserDetail: User = {
         ...userDetail,
