@@ -40,8 +40,7 @@ export async function sendEtherAndApprove(privateKey: string, amountInEther: str
   let txData = {
     to: accountWallet.address,
     // Convert currency unit from ether to wei
-    value: ethers.parseEther(amountInEther),
-    gasLimit: 6000000,
+    value: ethers.parseEther(amountInEther)
   }
   console.log(txData);
   // Send a transaction
